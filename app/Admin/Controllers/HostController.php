@@ -1,0 +1,185 @@
+<?php
+
+namespace App\Admin\Controllers;
+
+use App\Models\Host;
+
+use Encore\Admin\Form;
+use Encore\Admin\Grid;
+use Encore\Admin\Facades\Admin;
+use Encore\Admin\Layout\Content;
+use App\Http\Controllers\Controller;
+use Encore\Admin\Controllers\ModelForm;
+
+use Encore\Admin\Widgets\Box;
+use Encore\Admin\Widgets\Tab;
+use Encore\Admin\Widgets\Table;
+
+class HostController extends Controller
+{
+    use ModelForm;
+
+    /**
+     * Index interface.
+     *
+     * @return Content
+     */
+    public function index()
+    {
+        return Admin::content(function (Content $content) {
+
+            $content->header('header');
+            $content->description('description');
+
+            $content->body($this->grid());
+        });
+    }
+
+
+    public function show($id)
+    {
+        return Admin::content(function (Content $content) use($id) {
+            $host = Host::find($id);
+
+            $content->header('Host');
+            $content->description('host infomation');
+
+            $actions_box = new Box('操作', '<a href="/admin/host-add-user/' . $id . '">添加用户</a> | <a href="/admin/host-add-process/' . $id . '">添加可执行策略</a> | <a href="/admin/host-add-file/' . $id . '">添加文件策略</a>');
+            $content->row($actions_box);
+
+
+            $tab = new Tab();
+
+            $info_html = '<p>主机名：' . $host->name . '</p>' . '<p>IP地址：' . $host->ip . '</p>' . '<p>状态：' . $host->status . '</p>';
+            $info_box = new Box('基本信息', $info_html);
+            $tab->add('Info', $info_box);
+
+
+            $user_table_headers = ['username', 'passwd', 'role', 'action'];
+            $user_table_rows = [
+                                    ['testuser001', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['testuser002', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['testuser003', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['testuser004', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>']
+                                ];
+
+            $user_table = new Table($user_table_headers, $user_table_rows);
+            $tab->add('Users', $user_table);
+
+            $process_table_headers = ['process_name', 'process_size', 'process_hash', 'action'];
+            $process_table_rows = [
+                                    ['/sbin/mysql', '123456', '110453cc0d5d1a030215c92de4e1da706bb200e4', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['/sbin/apache', '321', 'b10453cc0d5d1a030215c92de4e1da706bb200e5', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['/sbin/php', '231123', 'c10453cc0d5d1a030215c92de4e1da706bb200e6', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['/sbin/nginx', '12', 'd10453cc0d5d1a030215c92de4e1da706bb200e7', '<a href="http://pengxiaozhou.com">删除</a>']
+                                ];
+
+            $process_table = new Table($process_table_headers, $process_table_rows);
+            $tab->add('Process', $process_table);
+
+            $file_table_headers = ['file_name', 'file_size', 'file_hash', 'file_opt', 'active_starttime', 'active_endtime', 'action'];
+            $file_table_rows = [
+                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>'],
+                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>']
+                                ];
+
+            $file_table = new Table($file_table_headers, $file_table_rows);
+            $tab->add('Files', $file_table);
+
+            $content->row($tab);
+
+        });
+
+
+        /*$host = Host::find($id);
+        echo $host->name, $host->ip;*/
+    }
+
+    /**
+     * Edit interface.
+     *
+     * @param $id
+     * @return Content
+     */
+    public function edit($id)
+    {
+        return Admin::content(function (Content $content) use ($id) {
+
+            $content->header('header');
+            $content->description('description');
+
+            $content->body($this->form()->edit($id));
+        });
+    }
+
+    /**
+     * Create interface.
+     *
+     * @return Content
+     */
+    public function create()
+    {
+        return Admin::content(function (Content $content) {
+
+            $content->header('header');
+            $content->description('description');
+
+            $content->body($this->form());
+        });
+    }
+
+    /**
+     * Make a grid builder.
+     *
+     * @return Grid
+     */
+    protected function grid()
+    {
+        return Admin::grid(Host::class, function (Grid $grid) {
+
+            $grid->id('ID')->sortable();
+
+            $grid->name('主机名')->editable();
+            $grid->ip('IP地址')->editable();
+
+            $states = [
+                'on' => ['text' => 'Alive'],
+                'off' => ['text' => 'Dead'],
+            ];
+
+            $grid->status('状态')->switch($states);
+
+            $grid->created_at();
+            $grid->updated_at();
+
+            $grid->actions(function ($actions) {
+                $id = $actions->getKey();
+                $actions->disableEdit();
+                $actions->append('<a href="host/' . $id . '"><i class="fa fa-eye"></i></a>');
+            });
+        });
+    }
+
+    /**
+     * Make a form builder.
+     *
+     * @return Form
+     */
+    protected function form()
+    {
+        return Admin::form(Host::class, function (Form $form) {
+
+            $form->display('id', 'ID');
+
+            $form->text('name', '主机名');
+            $form->text('ip', 'IP地址');
+            $form->text('status', '状态');
+
+            $form->display('created_at', 'Created At');
+            $form->display('updated_at', 'Updated At');
+        });
+    }
+
+}
