@@ -149,6 +149,10 @@ class HostController extends Controller
                 'off' => ['text' => 'Dead'],
             ];
 
+            $grid->sn('序列号');
+            $grid->cpu('CPU')->progressBar();
+            $grid->memory('内存')->progressBar();
+            $grid->disk('存储')->progressBar('warning');
             $grid->status('状态')->switch($states);
 
             $grid->created_at();
@@ -175,6 +179,7 @@ class HostController extends Controller
 
             $form->text('name', '主机名');
             $form->text('ip', 'IP地址');
+            $form->text('sn', '序列号');
             $form->text('status', '状态');
 
             $form->display('created_at', 'Created At');

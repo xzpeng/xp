@@ -102,9 +102,35 @@ class StrategyController extends Controller
     }
 
 
+    protected function formAddUser()
+    {
+        return Admin::form(Strategy::class, function (Form $form) {
+
+            $form->display('id', 'ID');
+            $form->hidden('host_id', $id);
+
+            $form->select('host_id')->options(function($id) {
+                return Host::options($id);
+            });
+            $form->ignore();
+
+            $form->display('created_at', 'Created At');
+            $form->display('updated_at', 'Updated At');
+        });
+    }
+
+
     public function addUser($id)
     {
-        echo 'addUser',$id;
+        return Admin::content(function (Content $content) use($id) {
+
+            $content->header('header');
+            $content->description('description');
+
+            $content->body($this->form());
+        });
+
+        // echo 'addUser',$id;
     }
 
     public function delUser($id)
