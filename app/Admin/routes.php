@@ -18,6 +18,7 @@ Route::group([
     $router->resource('strategies', StrategyController::class);
 
     $router->get('host-add-user/{id}', 'StrategyController@addUser');
+    $router->post('host-add-users', 'StrategyController@postAddUser');
     $router->get('host-del-user/{id}', 'StrategyController@delUser');
     $router->get('host-add-process/{id}', 'StrategyController@addProcess');
     $router->get('host-del-process/{id}', 'StrategyController@delProcess');

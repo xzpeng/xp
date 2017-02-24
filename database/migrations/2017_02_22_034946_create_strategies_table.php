@@ -16,6 +16,7 @@ class CreateStrategiesTable extends Migration
             $table->increments('id');
 
             $table->integer('host_id')->comment('The id in hosts table');
+            $table->integer('author')->comment('Who added this strategy');
             $table->string('module');
             $table->string('func');
             $table->string('info_username')->nullable();
@@ -33,6 +34,7 @@ class CreateStrategiesTable extends Migration
             $table->string('info_platform_name');
             $table->string('info_platform_sn');
             $table->string('info_platform_ip');
+            $table->smallInteger('is_deleted')->default(0);
             
             $table->timestamps();
         });

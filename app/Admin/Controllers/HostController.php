@@ -50,18 +50,30 @@ class HostController extends Controller
 
             $tab = new Tab();
 
-            $info_html = '<p>主机名：' . $host->name . '</p>' . '<p>IP地址：' . $host->ip . '</p>' . '<p>状态：' . $host->status . '</p>';
+            $info_html = <<<HTML
+<p>主机名： $host->name </p>
+<p>IP地址：$host->ip </p>
+<p>序列号：$host->sn </p>
+<p>CPU：$host->cpu </p>
+<p>内存：$host->memory </p>
+<p>存储：$host->disk </p>
+<p>状态：$host->status </p>
+
+HTML;
             $info_box = new Box('基本信息', $info_html);
             $tab->add('Info', $info_box);
 
 
             $user_table_headers = ['username', 'passwd', 'role', 'action'];
-            $user_table_rows = [
-                                    ['testuser001', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['testuser002', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['testuser003', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['testuser004', '111111', 'administrator', '<a href="http://pengxiaozhou.com">删除</a>']
-                                ];
+            $user_table_rows = [];
+            $user_rows = Host::find($id)->strategies()->where('module', 'user_manage')->where('is_deleted', 0)->select(['id', 'info_username', 'info_passwd', 'info_role'])->get()->toArray();
+
+            foreach ($user_rows as $key => $user_row) {
+                $user_table_rows[$key][] = $user_row['info_username'];
+                $user_table_rows[$key][] = $user_row['info_passwd'];
+                $user_table_rows[$key][] = $user_row['info_role'];
+                $user_table_rows[$key][] = '<a href="/admin/host-del-user/' . $user_row['id'] . '">删除</a>';
+            }
 
             $user_table = new Table($user_table_headers, $user_table_rows);
             $tab->add('Users', $user_table);
