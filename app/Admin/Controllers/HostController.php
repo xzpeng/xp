@@ -50,15 +50,79 @@ class HostController extends Controller
 
             $tab = new Tab();
 
-            $info_html = <<<HTML
-<p>主机名： $host->host_name </p>
-<p>IP地址：$host->host_ip </p>
-<p>序列号：$host->host_sn </p>
-<p>CPU：$host->host_stat </p>
-<p>内存：$host->host_stat </p>
-<p>存储：$host->host_stat </p>
-<p>状态：$host->status </p>
+            if($host_stat = json_decode($host->host_stat, true)) {
+                $cpu_stat = isset($host_stat['cpu'])?$host_stat['cpu']:0;
+                $memory_stat = ( isset($host_stat['memory'])&&isset($host_stat['memory']['available'])&&isset($host_stat['memory']['total']) )?round(($host_stat['memory']['available']*100/$host_stat['memory']['total']), 1):0;
+            } else {
+                $cpu_stat = 0;
+                $memory_stat = 0;
+            }
+            $cpu_stat_class = $cpu_stat<50?'progress-bar-success':($cpu_stat>75?'progress-bar-danger':'progress-bar-warning');
+            $memory_stat_class = $memory_stat<50?'progress-bar-success':($memory_stat>75?'progress-bar-danger':'progress-bar-warning');
 
+            $host_status = $host->status?'<span class="label label-info">Alive</span>':'<span class="label label-default">Dead</span>';
+
+
+            $info_html = <<<HTML
+<div class="col-xs-offset-2 col-xs-8">
+<table class="table table-striped">
+    <tr>
+        <td>主机名：</td>
+        <td>$host->host_name</td>
+    </tr>
+    <tr>
+        <td>IP地址：</td>
+        <td>$host->host_ip</td>
+    </tr>
+    <tr>
+        <td>序列号：</td>
+        <td>$host->host_sn</td>
+    </tr>
+    <tr>
+        <td>CPU：</td>
+        <td title="$cpu_stat%">
+            <div class="col-sm-12">
+                <div class="progress">
+                    <div class="progress-bar $cpu_stat_class progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: $cpu_stat%">
+                        $cpu_stat%
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>内存：</td>
+        <td title="$memory_stat%">
+            <div class="col-sm-12">
+                <div class="progress">
+                    <div class="progress-bar $memory_stat_class progress-bar-striped active" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: $memory_stat%">
+                      $memory_stat%
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>存储：</td>
+        <td>
+            <!--
+            <div class="col-sm-8">
+                <div class="progress progress-sm">
+                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 73.5%">
+                      <span class="sr-only"></span>
+                    </div>
+                </div>
+            </div>
+            -->
+        </td>
+    </tr>
+    <tr>
+        <td>状态：</td>
+        <td>
+        $host_status
+    </tr>
+</table>
+</div>
 HTML;
             $info_box = new Box('基本信息', $info_html);
             $tab->add('主机信息', $info_box);
