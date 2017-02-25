@@ -64,7 +64,7 @@ HTML;
             $tab->add('主机信息', $info_box);
 
 
-            $user_table_headers = ['username', 'passwd', 'role', 'action'];
+            $user_table_headers = ['用户名', '密码', '角色', '操作'];
             $user_table_rows = [];
             $user_rows = Host::find($id)->strategies()->where('module', 'user_manage')->where('is_deleted', 0)->select(['id', 'info_username', 'info_passwd', 'info_role'])->get()->toArray();
 
@@ -78,7 +78,7 @@ HTML;
             $user_table = new Table($user_table_headers, $user_table_rows);
             $tab->add('用户管理', $user_table);
 
-            $process_table_headers = ['process_name', 'process_size', 'process_hash', 'action'];
+            $process_table_headers = ['程序名', '程序大小', '程序hash', '操作'];
             $process_table_rows = [];
             $process_rows = Host::find($id)->strategies()->where('module', 'process_manage')->where('is_deleted', 0)->select(['id', 'info_process_name', 'info_process_size', 'info_process_hash'])->get()->toArray();
             
@@ -92,7 +92,7 @@ HTML;
             $process_table = new Table($process_table_headers, $process_table_rows);
             $tab->add('程序管理', $process_table);
 
-            $file_table_headers = ['file_name', 'file_size', 'file_hash', 'file_opt', 'active_starttime', 'active_endtime', 'action'];
+            $file_table_headers = ['文件名', '文件大小', '文件hash', '文件操作_opt', '生效时间', '结束时间', '操作'];
             $file_table_rows = [];
             $file_rows = Host::find($id)->strategies()->where('module', 'file_manage')->where('is_deleted', 0)->select(['id', 'info_file_name', 'info_file_size', 'info_file_hash', 'info_file_opt', 'info_active_starttime', 'info_active_endtime'])->get()->toArray();
 
