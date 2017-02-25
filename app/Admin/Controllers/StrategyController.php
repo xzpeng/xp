@@ -114,9 +114,9 @@ class StrategyController extends Controller
             $form->display('id', 'ID');
             $form->hidden('host_id')->value($id);
 
-            $form->display('host_name', '调度主机')->value($host->name);
-            $form->display('host_ip', '主机IP')->value($host->ip);
-            $form->display('host_sn', '主机SN')->value($host->sn);
+            $form->display('host_name', '调度主机')->value($host->host_name);
+            $form->display('host_ip', '主机IP')->value($host->host_ip);
+            $form->display('host_sn', '主机SN')->value($host->host_sn);
             $form->divider();
             $form->text('username', '用户名');
             $form->text('passwd', '密码');
@@ -138,9 +138,9 @@ class StrategyController extends Controller
             $form->display('id', 'ID');
             $form->hidden('host_id')->value($id);
 
-            $form->display('host_name', '调度主机')->value($host->name);
-            $form->display('host_ip', '主机IP')->value($host->ip);
-            $form->display('host_sn', '主机SN')->value($host->sn);
+            $form->display('host_name', '调度主机')->value($host->host_name);
+            $form->display('host_ip', '主机IP')->value($host->host_ip);
+            $form->display('host_sn', '主机SN')->value($host->host_sn);
             $form->divider();
             $form->text('process_name', '程序名');
             $form->text('process_size', '大小');
@@ -162,9 +162,9 @@ class StrategyController extends Controller
             $form->display('id', 'ID');
             $form->hidden('host_id')->value($id);
 
-            $form->display('host_name', '调度主机')->value($host->name);
-            $form->display('host_ip', '主机IP')->value($host->ip);
-            $form->display('host_sn', '主机SN')->value($host->sn);
+            $form->display('host_name', '调度主机')->value($host->host_name);
+            $form->display('host_ip', '主机IP')->value($host->host_ip);
+            $form->display('host_sn', '主机SN')->value($host->host_sn);
             $form->divider();
             $form->text('file_name', '文件名');
             $form->text('file_size', '大小');
@@ -204,13 +204,13 @@ class StrategyController extends Controller
                             'username' => $request_data['username'],
                             'passwd' => $request_data['passwd'],
                             'role' => $request_data['role'],
-                            'platform_name' => $host->name,
-                            'platform_sn' => $host->sn,
-                            'platform_ip' => $host->ip,
+                            'platform_name' => $host->host_name,
+                            'platform_sn' => $host->host_sn,
+                            'platform_ip' => $host->host_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -224,9 +224,9 @@ class StrategyController extends Controller
             $strategy->info_username = $request_data['username'];
             $strategy->info_passwd = $request_data['passwd'];
             $strategy->info_role = $request_data['role'];
-            $strategy->info_platform_name = $host->name;
-            $strategy->info_platform_sn = $host->sn;
-            $strategy->info_platform_ip = $host->ip;
+            $strategy->info_platform_name = $host->host_name;
+            $strategy->info_platform_sn = $host->host_sn;
+            $strategy->info_platform_ip = $host->host_ip;
 
             $strategy->save();
         }
@@ -264,13 +264,13 @@ class StrategyController extends Controller
                             'process_name' => $request_data['process_name'],
                             'process_size' => $request_data['process_size'],
                             'process_hash' => $request_data['process_hash'],
-                            'platform_name' => $host->name,
-                            'platform_sn' => $host->sn,
-                            'platform_ip' => $host->ip,
+                            'platform_name' => $host->host_name,
+                            'platform_sn' => $host->host_sn,
+                            'platform_ip' => $host->host_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -284,9 +284,9 @@ class StrategyController extends Controller
             $strategy->info_process_name = $request_data['process_name'];
             $strategy->info_process_size = $request_data['process_size'];
             $strategy->info_process_hash = $request_data['process_hash'];
-            $strategy->info_platform_name = $host->name;
-            $strategy->info_platform_sn = $host->sn;
-            $strategy->info_platform_ip = $host->ip;
+            $strategy->info_platform_name = $host->host_name;
+            $strategy->info_platform_sn = $host->host_sn;
+            $strategy->info_platform_ip = $host->host_ip;
 
             $strategy->save();
         }
@@ -325,13 +325,13 @@ class StrategyController extends Controller
                             'file_opt' => $request_data['file_opt'],
                             'active_starttime' => $request_data['active_starttime'],
                             'active_endtime' => $request_data['active_endtime'],
-                            'platform_name' => $host->name,
-                            'platform_sn' => $host->sn,
-                            'platform_ip' => $host->ip,
+                            'platform_name' => $host->host_name,
+                            'platform_sn' => $host->host_sn,
+                            'platform_ip' => $host->host_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -348,9 +348,9 @@ class StrategyController extends Controller
             $strategy->info_file_opt = $request_data['file_opt'];
             $strategy->info_active_starttime = $request_data['active_starttime'];
             $strategy->info_active_endtime = $request_data['active_endtime'];
-            $strategy->info_platform_name = $host->name;
-            $strategy->info_platform_sn = $host->sn;
-            $strategy->info_platform_ip = $host->ip;
+            $strategy->info_platform_name = $host->host_name;
+            $strategy->info_platform_sn = $host->host_sn;
+            $strategy->info_platform_ip = $host->host_ip;
 
             $strategy->save();
         }

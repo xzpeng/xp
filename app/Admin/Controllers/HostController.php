@@ -51,12 +51,12 @@ class HostController extends Controller
             $tab = new Tab();
 
             $info_html = <<<HTML
-<p>主机名： $host->name </p>
-<p>IP地址：$host->ip </p>
-<p>序列号：$host->sn </p>
-<p>CPU：$host->cpu </p>
-<p>内存：$host->memory </p>
-<p>存储：$host->disk </p>
+<p>主机名： $host->host_name </p>
+<p>IP地址：$host->host_ip </p>
+<p>序列号：$host->host_sn </p>
+<p>CPU：$host->host_stat </p>
+<p>内存：$host->host_stat </p>
+<p>存储：$host->host_stat </p>
 <p>状态：$host->status </p>
 
 HTML;
@@ -113,10 +113,6 @@ HTML;
             $content->row($tab);
 
         });
-
-
-        /*$host = Host::find($id);
-        echo $host->name, $host->ip;*/
     }
 
     /**
@@ -163,18 +159,18 @@ HTML;
 
             $grid->id('ID')->sortable();
 
-            $grid->name('主机名')->editable();
-            $grid->ip('IP地址')->editable();
+            $grid->host_name('主机名')->editable();
+            $grid->host_ip('IP地址')->editable();
 
             $states = [
                 'on' => ['text' => 'Alive'],
                 'off' => ['text' => 'Dead'],
             ];
 
-            $grid->sn('序列号');
-            $grid->cpu('CPU')->progressBar();
+            $grid->host_sn('序列号');
+            /*$grid->cpu('CPU')->progressBar();
             $grid->memory('内存')->progressBar();
-            $grid->disk('存储')->progressBar('warning');
+            $grid->disk('存储')->progressBar('warning');*/
             $grid->status('状态')->switch($states);
 
             $grid->created_at();
@@ -199,9 +195,9 @@ HTML;
 
             $form->display('id', 'ID');
 
-            $form->text('name', '主机名');
-            $form->text('ip', 'IP地址');
-            $form->text('sn', '序列号');
+            $form->text('host_name', '主机名');
+            $form->text('host_ip', 'IP地址');
+            $form->text('host_sn', '序列号');
             $form->text('status', '状态');
 
             $form->display('created_at', 'Created At');
