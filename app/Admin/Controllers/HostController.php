@@ -41,8 +41,8 @@ class HostController extends Controller
         return Admin::content(function (Content $content) use($id) {
             $host = Host::find($id);
 
-            $content->header('Host');
-            $content->description('host infomation');
+            $content->header('主机管理');
+            $content->description('主机信息查看、管理……');
 
             $actions_box = new Box('操作', '<a href="/admin/host-add-user/' . $id . '">添加用户</a> | <a href="/admin/host-add-process/' . $id . '">添加可执行策略</a> | <a href="/admin/host-add-file/' . $id . '">添加文件策略</a>');
             $content->row($actions_box);
@@ -61,7 +61,7 @@ class HostController extends Controller
 
 HTML;
             $info_box = new Box('基本信息', $info_html);
-            $tab->add('Info', $info_box);
+            $tab->add('主机信息', $info_box);
 
 
             $user_table_headers = ['username', 'passwd', 'role', 'action'];
@@ -76,29 +76,39 @@ HTML;
             }
 
             $user_table = new Table($user_table_headers, $user_table_rows);
-            $tab->add('Users', $user_table);
+            $tab->add('用户管理', $user_table);
 
             $process_table_headers = ['process_name', 'process_size', 'process_hash', 'action'];
-            $process_table_rows = [
-                                    ['/sbin/mysql', '123456', '110453cc0d5d1a030215c92de4e1da706bb200e4', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['/sbin/apache', '321', 'b10453cc0d5d1a030215c92de4e1da706bb200e5', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['/sbin/php', '231123', 'c10453cc0d5d1a030215c92de4e1da706bb200e6', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['/sbin/nginx', '12', 'd10453cc0d5d1a030215c92de4e1da706bb200e7', '<a href="http://pengxiaozhou.com">删除</a>']
-                                ];
+            $process_table_rows = [];
+            $process_rows = Host::find($id)->strategies()->where('module', 'process_manage')->where('is_deleted', 0)->select(['id', 'info_process_name', 'info_process_size', 'info_process_hash'])->get()->toArray();
+            
+            foreach ($process_rows as $key => $process_row) {
+                $process_table_rows[$key][] = $process_row['info_process_name'];
+                $process_table_rows[$key][] = $process_row['info_process_size'];
+                $process_table_rows[$key][] = $process_row['info_process_hash'];
+                $process_table_rows[$key][] = '<a href="/admin/host-del-process/' . $process_row['id'] . '">删除</a>';
+            }
 
             $process_table = new Table($process_table_headers, $process_table_rows);
-            $tab->add('Process', $process_table);
+            $tab->add('程序管理', $process_table);
 
             $file_table_headers = ['file_name', 'file_size', 'file_hash', 'file_opt', 'active_starttime', 'active_endtime', 'action'];
-            $file_table_rows = [
-                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>'],
-                                    ['/etc/passwd', '11123', 'b10453cc0d5d1a030215c92de4e1da706bb200e4', 'write', '2017-02-20 08:33:56', '2017-02-20 08:33:56', '<a href="http://pengxiaozhou.com">删除</a>']
-                                ];
+            $file_table_rows = [];
+            $file_rows = Host::find($id)->strategies()->where('module', 'file_manage')->where('is_deleted', 0)->select(['id', 'info_file_name', 'info_file_size', 'info_file_hash', 'info_file_opt', 'info_active_starttime', 'info_active_endtime'])->get()->toArray();
+
+            foreach ($file_rows as $key => $file_row) {
+                $file_table_rows[$key][] = $file_row['info_file_name'];
+                $file_table_rows[$key][] = $file_row['info_file_size'];
+                $file_table_rows[$key][] = $file_row['info_file_hash'];
+                $file_table_rows[$key][] = $file_row['info_file_opt'];
+                $file_table_rows[$key][] = $file_row['info_active_starttime'];
+                $file_table_rows[$key][] = $file_row['info_active_endtime'];
+                $file_table_rows[$key][] = '<a href="/admin/host-del-file/' . $file_row['id'] . '">删除</a>';
+            }
 
             $file_table = new Table($file_table_headers, $file_table_rows);
-            $tab->add('Files', $file_table);
+            $tab->add('文件管理', $file_table);
+            
 
             $content->row($tab);
 

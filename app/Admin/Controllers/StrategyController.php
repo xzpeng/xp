@@ -129,6 +129,57 @@ class StrategyController extends Controller
         });
     }
 
+    protected function formAddProcess($id)
+    {
+        return Admin::form(Strategy::class, function (Form $form) use($id) {
+
+            $host = Host::find($id);
+
+            $form->display('id', 'ID');
+            $form->hidden('host_id')->value($id);
+
+            $form->display('host_name', '调度主机')->value($host->name);
+            $form->display('host_ip', '主机IP')->value($host->ip);
+            $form->display('host_sn', '主机SN')->value($host->sn);
+            $form->divider();
+            $form->text('process_name', '程序名');
+            $form->text('process_size', '大小');
+            $form->text('process_hash', 'Hash值');
+
+            
+            // $form->ignore();
+            // $form->setWidth(10, 2);
+            $form->setAction('/admin/host-add-process');
+        });
+    }
+
+    protected function formAddFile($id)
+    {
+        return Admin::form(Strategy::class, function (Form $form) use($id) {
+
+            $host = Host::find($id);
+
+            $form->display('id', 'ID');
+            $form->hidden('host_id')->value($id);
+
+            $form->display('host_name', '调度主机')->value($host->name);
+            $form->display('host_ip', '主机IP')->value($host->ip);
+            $form->display('host_sn', '主机SN')->value($host->sn);
+            $form->divider();
+            $form->text('file_name', '文件名');
+            $form->text('file_size', '大小');
+            $form->text('file_hash', 'Hash值');
+            $form->text('file_opt', '操作');
+            $form->datetime('active_starttime', '生效时间');
+            $form->datetime('active_endtime', '生效时间');
+
+            
+            // $form->ignore();
+            // $form->setWidth(10, 2);
+            $form->setAction('/admin/host-add-file');
+        });
+    }
+
 
     public function addUser($id)
     {
@@ -185,13 +236,62 @@ class StrategyController extends Controller
 
     public function delUser($id)
     {
-        dd(Admin::user()->id);
+        $strategy = Strategy::find($id);
+        
         echo 'delUser',$id;
     }
 
     public function addProcess($id)
     {
-        echo 'addProcess',$id;
+        return Admin::content(function (Content $content) use($id) {
+
+            $content->header('header');
+            $content->description('description');
+
+            $content->body($this->formAddProcess($id));
+        });
+    }
+
+    public function postAddProcess(Request $request)
+    {
+        $request_data = $request->input();
+
+        $host = Host::find($request_data['host_id']);
+        $xml_data = array(
+                        'module' => 'process_manage',
+                        'func' => 'add',
+                        'info' => array(
+                            'process_name' => $request_data['process_name'],
+                            'process_size' => $request_data['process_size'],
+                            'process_hash' => $request_data['process_hash'],
+                            'platform_name' => $host->name,
+                            'platform_sn' => $host->sn,
+                            'platform_ip' => $host->ip,
+                        )
+                    );
+
+        $socketClient = new \App\SocketClient($host->ip, 9003, $xml_data);
+        $socket_response = $socketClient->send();
+        $socketClient->close();
+
+        if($socket_response) {
+            $strategy = new Strategy;
+
+            $strategy->host_id = $host->id;
+            $strategy->author = Admin::user()->id;
+            $strategy->module = 'user_process';
+            $strategy->func = 'add';
+            $strategy->info_process_name = $request_data['process_name'];
+            $strategy->info_process_size = $request_data['process_size'];
+            $strategy->info_process_hash = $request_data['process_hash'];
+            $strategy->info_platform_name = $host->name;
+            $strategy->info_platform_sn = $host->sn;
+            $strategy->info_platform_ip = $host->ip;
+
+            $strategy->save();
+        }
+
+        return redirect('/admin/host/' . $request_data['host_id']);
     }
 
     public function delProcess($id)
@@ -201,7 +301,61 @@ class StrategyController extends Controller
 
     public function addFile($id)
     {
-        echo 'addFile',$id;
+        return Admin::content(function (Content $content) use($id) {
+
+            $content->header('header');
+            $content->description('description');
+
+            $content->body($this->formAddFile($id));
+        });
+    }
+    
+    public function postAddFile(Request $request)
+    {
+        $request_data = $request->input();
+
+        $host = Host::find($request_data['host_id']);
+        $xml_data = array(
+                        'module' => 'process_manage',
+                        'func' => 'add',
+                        'info' => array(
+                            'file_name' => $request_data['file_name'],
+                            'file_size' => $request_data['file_size'],
+                            'file_hash' => $request_data['file_hash'],
+                            'file_opt' => $request_data['file_opt'],
+                            'active_starttime' => $request_data['active_starttime'],
+                            'active_endtime' => $request_data['active_endtime'],
+                            'platform_name' => $host->name,
+                            'platform_sn' => $host->sn,
+                            'platform_ip' => $host->ip,
+                        )
+                    );
+
+        $socketClient = new \App\SocketClient($host->ip, 9003, $xml_data);
+        $socket_response = $socketClient->send();
+        $socketClient->close();
+
+        if($socket_response) {
+            $strategy = new Strategy;
+
+            $strategy->host_id = $host->id;
+            $strategy->author = Admin::user()->id;
+            $strategy->module = 'file_manage';
+            $strategy->func = 'add';
+            $strategy->info_file_name = $request_data['file_name'];
+            $strategy->info_file_size = $request_data['file_size'];
+            $strategy->info_file_hash = $request_data['file_hash'];
+            $strategy->info_file_opt = $request_data['file_opt'];
+            $strategy->info_active_starttime = $request_data['active_starttime'];
+            $strategy->info_active_endtime = $request_data['active_endtime'];
+            $strategy->info_platform_name = $host->name;
+            $strategy->info_platform_sn = $host->sn;
+            $strategy->info_platform_ip = $host->ip;
+
+            $strategy->save();
+        }
+
+        return redirect('/admin/host/' . $request_data['host_id']);
     }
 
     public function delFile($id)
