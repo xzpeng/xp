@@ -238,7 +238,30 @@ class StrategyController extends Controller
     {
         $strategy = Strategy::find($id);
         
-        echo 'delUser',$id;
+        $host = Host::find($strategy->host_id);
+
+        $xml_data = array(
+                        'module' => 'user_manage',
+                        'func' => 'del',
+                        'info' => array(
+                            'username' => $strategy->info_username,
+                            'passwd' => '',
+                            'role' => '',
+                            'platform_name' => $host->host_name,
+                            'platform_sn' => $host->host_sn,
+                            'platform_ip' => $host->host_ip,
+                        )
+                    );
+
+        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socket_response = $socketClient->send();
+        $socketClient->close();
+
+        if($socket_response) {
+            $strategy->delete();
+        }
+
+        return redirect('/admin/host/' . $request_data['host_id']);
     }
 
     public function addProcess($id)
@@ -296,7 +319,32 @@ class StrategyController extends Controller
 
     public function delProcess($id)
     {
-        echo 'delProcess',$id;
+        $strategy = Strategy::find($id);
+        
+        $host = Host::find($strategy->host_id);
+
+        $xml_data = array(
+                        'module' => 'process_manage',
+                        'func' => 'del',
+                        'info' => array(
+                            'process_name' => $strategy->info_process_name,
+                            'process_size' => $strategy->info_process_size,
+                            'process_hash' => $strategy->info_process_hash,
+                            'platform_name' => $host->host_name,
+                            'platform_sn' => $host->host_sn,
+                            'platform_ip' => $host->host_ip,
+                        )
+                    );
+
+        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socket_response = $socketClient->send();
+        $socketClient->close();
+
+        if($socket_response) {
+            $strategy->delete();
+        }
+
+        return redirect('/admin/host/' . $strategy->host_id);
     }
 
     public function addFile($id)
@@ -360,6 +408,34 @@ class StrategyController extends Controller
 
     public function delFile($id)
     {
-        echo 'delFile',$id;
+        $strategy = Strategy::find($id);
+        
+        $host = Host::find($strategy->host_id);
+
+        $xml_data = array(
+                        'module' => 'file_manage',
+                        'func' => 'del',
+                        'info' => array(
+                            'file_name' => $strategy->info_file_name,
+                            'file_size' => $strategy->info_file_size,
+                            'file_hash' => $strategy->info_file_hash,
+                            'file_opt' => $strategy->info_file_opt,
+                            'active_starttime' => $strategy->info_active_starttime,
+                            'active_endtime' => $strategy->info_active_endtime,
+                            'platform_name' => $host->host_name,
+                            'platform_sn' => $host->host_sn,
+                            'platform_ip' => $host->host_ip,
+                        )
+                    );
+
+        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socket_response = $socketClient->send();
+        $socketClient->close();
+
+        if($socket_response) {
+            $strategy->delete();
+        }
+
+        return redirect('/admin/host/' . $strategy->host_id);
     }
 }
