@@ -302,7 +302,7 @@ class StrategyController extends Controller
 
             $strategy->host_id = $host->id;
             $strategy->author = Admin::user()->id;
-            $strategy->module = 'user_process';
+            $strategy->module = 'process_manage';
             $strategy->func = 'add';
             $strategy->info_process_name = $request_data['process_name'];
             $strategy->info_process_size = $request_data['process_size'];
@@ -311,7 +311,7 @@ class StrategyController extends Controller
             $strategy->info_platform_sn = $host->host_sn;
             $strategy->info_platform_ip = $host->host_ip;
 
-            $strategy->save();
+            $rst = $strategy->save();
         }
 
         return redirect('/admin/host/' . $request_data['host_id']);
@@ -324,7 +324,7 @@ class StrategyController extends Controller
         $host = Host::find($strategy->host_id);
 
         $xml_data = array(
-                        'module' => 'process_manage',
+                        'module' => 'file_manage',
                         'func' => 'del',
                         'info' => array(
                             'process_name' => $strategy->info_process_name,
