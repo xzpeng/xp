@@ -17,15 +17,15 @@ Route::group([
 
     $router->resource('strategies', StrategyController::class);
 
-    $router->get('host-add-user/{id}', 'StrategyController@addUser');
+    $router->get('host-add-user/{id}/{msg?}', 'StrategyController@addUser');
     $router->post('host-add-users', 'StrategyController@postAddUser');
     $router->get('host-del-user/{id}', 'StrategyController@delUser');
 
-    $router->get('host-add-process/{id}', 'StrategyController@addProcess');
+    $router->get('host-add-process/{id}/{msg?}', 'StrategyController@addProcess');
     $router->post('host-add-process', 'StrategyController@postAddProcess');
     $router->get('host-del-process/{id}', 'StrategyController@delProcess');
-    
-    $router->get('host-add-file/{id}', 'StrategyController@addFile');
+
+    $router->get('host-add-file/{id}/{msg?}', 'StrategyController@addFile');
     $router->post('host-add-file', 'StrategyController@postAddFile');
     $router->get('host-del-file/{id}', 'StrategyController@delFile');
 

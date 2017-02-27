@@ -181,12 +181,14 @@ class StrategyController extends Controller
     }
 
 
-    public function addUser($id)
+    public function addUser($id, $msg='')
     {
-        return Admin::content(function (Content $content) use($id) {
+        return Admin::content(function (Content $content) use($id, $msg) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('添加用户');
+            if($msg){
+                $content->description($msg);
+            }
 
             $content->body($this->formAddUser($id));
         });
@@ -231,7 +233,7 @@ class StrategyController extends Controller
             $strategy->save();
         }
 
-        return redirect('/admin/host/' . $request_data['host_id']);
+        return redirect('/admin/host-add-user/' . $request_data['host_id'] . '/用户' . $request_data['username'] . '添加成功!');
     }
 
     public function delUser($id)
@@ -264,12 +266,14 @@ class StrategyController extends Controller
         return redirect('/admin/host/' . $request_data['host_id']);
     }
 
-    public function addProcess($id)
+    public function addProcess($id, $msg='')
     {
-        return Admin::content(function (Content $content) use($id) {
+        return Admin::content(function (Content $content) use($id, $msg) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('添加策略');
+            if($msg){
+                $content->description($msg);
+            }
 
             $content->body($this->formAddProcess($id));
         });
@@ -314,7 +318,7 @@ class StrategyController extends Controller
             $rst = $strategy->save();
         }
 
-        return redirect('/admin/host/' . $request_data['host_id']);
+        return redirect('/admin/host-add-process/' . $request_data['host_id'] . '/策略' . $request_data['process_name'] . '添加成功!');
     }
 
     public function delProcess($id)
@@ -347,12 +351,14 @@ class StrategyController extends Controller
         return redirect('/admin/host/' . $strategy->host_id);
     }
 
-    public function addFile($id)
+    public function addFile($id, $msg='')
     {
-        return Admin::content(function (Content $content) use($id) {
+        return Admin::content(function (Content $content) use($id, $msg) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('添加文件');
+            if($msg){
+                $content->description($msg);
+            }
 
             $content->body($this->formAddFile($id));
         });
@@ -403,7 +409,7 @@ class StrategyController extends Controller
             $strategy->save();
         }
 
-        return redirect('/admin/host/' . $request_data['host_id']);
+        return redirect('/admin/host-add-file/' . $request_data['host_id'] . '/文件' . $request_data['file_name'] . '添加成功!');
     }
 
     public function delFile($id)
