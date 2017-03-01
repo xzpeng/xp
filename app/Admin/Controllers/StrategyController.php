@@ -212,7 +212,7 @@ class StrategyController extends Controller
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -255,7 +255,7 @@ class StrategyController extends Controller
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -297,7 +297,7 @@ class StrategyController extends Controller
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -340,7 +340,7 @@ class StrategyController extends Controller
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -385,7 +385,7 @@ class StrategyController extends Controller
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -434,7 +434,7 @@ class StrategyController extends Controller
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, 9003, $xml_data);
+        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 

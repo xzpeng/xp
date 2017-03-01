@@ -566,16 +566,16 @@
         },
         {
             "name": "encore/laravel-admin",
-            "version": "v1.2.8",
+            "version": "v1.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/z-song/laravel-admin.git",
-                "reference": "46cf70c15c138c985bd0d8d6c800dffd98cdad35"
+                "reference": "b33ec2e21063f9b12e1656fad6f91c83c092cece"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://packagist.phpcomposer.com/files/z-song/laravel-admin/46cf70c15c138c985bd0d8d6c800dffd98cdad35.zip",
-                "reference": "46cf70c15c138c985bd0d8d6c800dffd98cdad35",
+                "url": "https://packagist.phpcomposer.com/files/z-song/laravel-admin/b33ec2e21063f9b12e1656fad6f91c83c092cece.zip",
+                "reference": "b33ec2e21063f9b12e1656fad6f91c83c092cece",
                 "shasum": ""
             },
             "require": {
@@ -622,7 +622,7 @@
                 "grid",
                 "laravel"
             ],
-            "time": "2017-01-17 09:55:23"
+            "time": "2017-02-20 07:22:54"
         },
         {
             "name": "jakub-onderka/php-console-color",

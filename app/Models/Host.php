@@ -15,6 +15,11 @@ class Host extends Model
     	return $this->hasMany('App\Models\Strategy');
     }
 
+    public function softwares()
+    {
+        return $this->belongsToMany('App\Models\Software');
+    }
+
 
     public static function options($id)
     {

@@ -67,6 +67,10 @@ return [
 
     'locale' => 'zh_CN',
 
+
+    'socket_remote_port' => env('APP_SOCKET_REMOTE_PORT', 9003),
+    'socket_local_port' => env('APP_SOCKET_LOCAL_PORT', 8008),
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
@@ -79,6 +83,8 @@ return [
     */
 
     'fallback_locale' => 'en',
+
+
 
     /*
     |--------------------------------------------------------------------------
