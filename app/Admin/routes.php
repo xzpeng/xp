@@ -16,14 +16,17 @@ Route::group([
 
 
     $router->resource('strategies', StrategyController::class);
-
     $router->resource('softwares', SoftwareController::class);
+    $router->resource('files', FileController::class);
 
-    //$router->get('install-software', 'SoftwareController@softwareApplication');
-    
+
     $router->resource('install-software', HostSoftwareController::class);
     $router->post('host-software-application', 'HostSoftwareController@postHostSoftwareApplication');
     $router->get('software-install/{id}', 'HostSoftwareController@softwareInstall');
+
+    $router->resource('upload-file', HostFileController::class);
+    $router->post('host-file-application', 'HostFileController@postHostFileApplication');
+    $router->get('file-upload/{id}', 'HostFileController@fileUpload');
 
 
     $router->get('host-add-user/{id}/{msg?}', 'StrategyController@addUser');

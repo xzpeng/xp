@@ -2,9 +2,9 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\HostSoftware;
+use App\Models\HostFile;
 use App\Models\Host;
-use App\Models\Software;
+use App\Models\File;
 
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
-class HostSoftwareController extends Controller
+class HostFileController extends Controller
 {
     use ModelForm;
 
@@ -61,56 +61,57 @@ class HostSoftwareController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('软件申请');
-            $content->description('请选择主机和软件');
+            $content->header('header');
+            $content->description('description');
 
             $content->body($this->form());
         });
     }
 
     /**
-     * [postHostSoftwareApplication description]
+     * [postHostFileApplication description]
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function postHostSoftwareApplication(Request $request)
+    public function postHostFileApplication(Request $request)
     {
         $host_ids = $request->input('host_ids');
-        $software_ids = $request->input('software_ids');
+        $file_ids = $request->input('file_ids');
+        $upload_path = $request->input('upload_path');
 
         array_pop($host_ids);
-        array_pop($software_ids);
+        array_pop($file_ids);
 
         $rst = [];
 
         foreach ($host_ids as $host_id) {
-            foreach ($software_ids as $software_id) {
-                $rst[] = HostSoftware::firstOrCreate(['host_id' => (int)$host_id, 'software_id' => (int)$software_id]);
+            foreach ($file_ids as $file_id) {
+                $rst[] = HostFile::firstOrCreate(['host_id' => (int)$host_id, 'file_id' => (int)$file_id, 'upload_path' => $upload_path]);
             }
         }
 
-        return redirect('/admin/install-software');
+        return redirect('/admin/upload-file');
     }
-
 
     /**
      * [softwareInstall description]
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
-    public function softwareInstall($id)
+    public function fileUpload($id)
     {
-        $host_software = HostSoftware::find($id);
+        $host_file = HostFile::find($id);
 
-        $host = Host::find($host_software->host_id);
-        $software = Software::find($host_software->software_id);
+        $host = Host::find($host_file->host_id);
+        $file = File::find($host_file->file_id);
 
         $xml_data = array(
-                        'module' => 'soft_manage',
-                        'func' => 'install',
+                        'module' => 'file_manage',
+                        'func' => 'upload',
                         'info' => array(
-                            'soft_name' => $software->name,
-                            'soft_path' => config('filesystems.disks.admin.root') . '/' . $software->path,
+                            'file_name' => $file->name,
+                            'soft_path' => config('filesystems.disks.admin.root') . '/' . $file->path,
+                            'upload_path' => $host_file->upload_path,
                             'platform_name' => $host->host_name,
                             'platform_sn' => $host->host_sn,
                             'platform_ip' => $host->host_ip,
@@ -122,8 +123,8 @@ class HostSoftwareController extends Controller
         $socketClient->close();
 
         if($socket_response) {
-            $host_software->status = 1;
-            $host_software->save();
+            $host_file->status = 1;
+            $host_file->save();
         }
 
         return redirect()->back();
@@ -136,7 +137,7 @@ class HostSoftwareController extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(HostSoftware::class, function (Grid $grid) {
+        return Admin::grid(HostFile::class, function (Grid $grid) {
 
             // $grid->id('ID')->sortable();
 
@@ -144,16 +145,17 @@ class HostSoftwareController extends Controller
                 $host = Host::find($host_id);
                 return $host->host_name . '/' . $host->host_ip . '/' . $host->host_sn;
             });
-            $grid->software_id('软件')->display(function ($software_id) {
-                return Software::find($software_id)->name;
+            $grid->file_id('文件')->display(function ($file_id) {
+                return File::find($file_id)->name;
             });
+            $grid->upload_path('上传路径');
             $grid->column('状态')->display(function(){
                 if($this->status == 0) {
                     return '已申请';
                 } else if($this->status == 1) {
-                    return '安装中...';
+                    return '上传中...';
                 } else if($this->status ==2) {
-                    return '已安装';
+                    return '已上传';
                 }
             });
 
@@ -162,11 +164,11 @@ class HostSoftwareController extends Controller
                 $actions->disableEdit();
 
                 if ($actions->row->status == 0) {
-                    $action_btn = '<a class="btn btn-primary btn-xs" href="' . url('/admin/software-install/' . $actions->row->id) . '">安装</a>';
+                    $action_btn = '<a class="btn btn-primary btn-xs" href="' . url('/admin/file-upload/' . $actions->row->id) . '">上传</a>';
                 } else if($actions->row->status == 1) {
-                    $action_btn = '<a class="btn btn-primary btn-xs" href="' . url('/admin/software-installing/' . $actions->row->id) . '">安装中...</a>';
+                    $action_btn = '<a class="btn btn-primary btn-xs" href="' . url('/admin/file-uploading/' . $actions->row->id) . '">上传中...</a>';
                 } else if($actions->row->status == 2) {
-                    $action_btn = '<a class="btn btn-danger btn-xs" href="' . url('/admin/software-uninstall/' . $actions->row->id) . '">卸载</a>';
+                    $action_btn = '<a class="btn btn-danger btn-xs" href="' . url('/admin/file-remove/' . $actions->row->id) . '">移除</a>';
                 } else {
                     $action_btn = '';
                 }
@@ -192,16 +194,17 @@ class HostSoftwareController extends Controller
      */
     protected function form()
     {
-        return Admin::form(HostSoftware::class, function (Form $form) {
+        return Admin::form(HostFile::class, function (Form $form) {
 
             $form->display('id', 'ID');
             $form->multipleSelect('host_ids', '主机')->options(Host::all()->pluck('host_name', 'id'))->attribute(['required'=>'required']);
-            $form->multipleSelect('software_ids', '软件')->options(Software::all()->pluck('name', 'id'))->attribute(['required'=>'required']);
+            $form->multipleSelect('file_ids', '软件')->options(File::all()->pluck('name', 'id'))->attribute(['required'=>'required']);
+            $form->text('upload_path', '上传路径');
 
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
 
-            $form->setAction('/admin/host-software-application');
+            $form->setAction('/admin/host-file-application');
         });
     }
 }

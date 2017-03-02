@@ -2,9 +2,7 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\Software;
-use App\Models\Host;
-use App\Models\HostSoftware;
+use App\Models\File;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -13,7 +11,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
-class SoftwareController extends Controller
+class FileController extends Controller
 {
     use ModelForm;
 
@@ -66,7 +64,6 @@ class SoftwareController extends Controller
         });
     }
 
-
     /**
      * Make a grid builder.
      *
@@ -74,16 +71,17 @@ class SoftwareController extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(Software::class, function (Grid $grid) {
+        return Admin::grid(File::class, function (Grid $grid) {
 
             $grid->id('ID')->sortable();
-            $grid->name('软件名');
+            $grid->name('文件名');
             $grid->column('path', '路径')->value(function($path){
                 if($path)
                     return '<a href="' . config('admin.upload.host') . $path . '" target="_blank">下载</a>';
                 else
                     return '';
             });
+            $grid->column('sub_files', '内容');
 
             $grid->created_at('添加时间');
             // $grid->updated_at();
@@ -93,7 +91,7 @@ class SoftwareController extends Controller
                     $batch->disableDelete();
                 });
             });
-
+            
             $grid->disableExport();
         });
     }
@@ -105,11 +103,11 @@ class SoftwareController extends Controller
      */
     protected function form()
     {
-        return Admin::form(Software::class, function (Form $form) {
+        return Admin::form(File::class, function (Form $form) {
 
             $form->display('id', 'ID');
-            $form->text('name', '软件名');
-            $form->file('path', '选择软件');
+            $form->text('name', '文件名');
+            $form->file('path', '选择文件');
 
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
