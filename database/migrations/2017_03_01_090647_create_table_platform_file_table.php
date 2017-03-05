@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableHostFileTable extends Migration
+class CreateTablePlatformFileTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class CreateTableHostFileTable extends Migration
      */
     public function up()
     {
-        Schema::create('host_file', function (Blueprint $table) {
+        Schema::create('platform_file', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('host_id')->comment('The id in hosts table');
-            $table->integer('file_id')->comment('The id in softwares table');
+            $table->integer('platform_id')->comment('The id in platforms table');
+            $table->integer('file_id')->comment('The id in files table');
             $table->string('upload_path');
-            $table->integer('status')->comment('Software installing status: 1-申请,2-已安装');
+            $table->integer('status')->comment('File uploading status: 1-申请,2-已安装');
             $table->timestamps();
         });
     }

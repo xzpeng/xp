@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableHostSoftwareTable extends Migration
+class CreateTablePlatformSoftwareTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,9 @@ class CreateTableHostSoftwareTable extends Migration
      */
     public function up()
     {
-        Schema::create('host_software', function (Blueprint $table) {
+        Schema::create('platform_software', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('host_id')->comment('The id in hosts table');
+            $table->integer('platform_id')->comment('The id in platforms table');
             $table->integer('software_id')->comment('The id in softwares table');
             $table->integer('status')->comment('Software installing status: 1-申请,2-已安装');
             $table->timestamps();

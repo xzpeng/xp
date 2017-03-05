@@ -3,7 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Strategy;
-use App\Models\Host;
+use App\Models\Platform;
 use Illuminate\Http\Request;
 
 use Encore\Admin\Form;
@@ -95,8 +95,8 @@ class StrategyController extends Controller
 
             $form->display('id', 'ID');
 
-            $form->select('host_id')->options(function($id) {
-                return Host::options($id);
+            $form->select('platform_id')->options(function($id) {
+                return Platform::options($id);
             });
 
             $form->display('created_at', 'Created At');
@@ -109,14 +109,14 @@ class StrategyController extends Controller
     {
         return Admin::form(Strategy::class, function (Form $form) use($id) {
 
-            $host = Host::find($id);
+            $platform = Platform::find($id);
 
             $form->display('id', 'ID');
-            $form->hidden('host_id')->value($id);
+            $form->hidden('platform_id')->value($id);
 
-            $form->display('host_name', '调度主机')->value($host->host_name);
-            $form->display('host_ip', '主机IP')->value($host->host_ip);
-            $form->display('host_sn', '主机SN')->value($host->host_sn);
+            $form->display('platform_name', '调度主机')->value($platform->platform_name);
+            $form->display('platform_ip', '主机IP')->value($platform->platform_ip);
+            $form->display('platform_sn', '主机SN')->value($platform->platform_sn);
             $form->divider();
             $form->text('username', '用户名');
             $form->text('passwd', '密码');
@@ -125,7 +125,7 @@ class StrategyController extends Controller
             
             // $form->ignore();
             // $form->setWidth(10, 2);
-            $form->setAction('/admin/host-add-users');
+            $form->setAction('/admin/platform-add-users');
         });
     }
 
@@ -133,14 +133,14 @@ class StrategyController extends Controller
     {
         return Admin::form(Strategy::class, function (Form $form) use($id) {
 
-            $host = Host::find($id);
+            $platform = Platform::find($id);
 
             $form->display('id', 'ID');
-            $form->hidden('host_id')->value($id);
+            $form->hidden('platform_id')->value($id);
 
-            $form->display('host_name', '调度主机')->value($host->host_name);
-            $form->display('host_ip', '主机IP')->value($host->host_ip);
-            $form->display('host_sn', '主机SN')->value($host->host_sn);
+            $form->display('platform_name', '调度主机')->value($platform->platform_name);
+            $form->display('platform_ip', '主机IP')->value($platform->platform_ip);
+            $form->display('platform_sn', '主机SN')->value($platform->platform_sn);
             $form->divider();
             $form->text('process_name', '程序名');
             $form->text('process_size', '大小');
@@ -149,7 +149,7 @@ class StrategyController extends Controller
             
             // $form->ignore();
             // $form->setWidth(10, 2);
-            $form->setAction('/admin/host-add-process');
+            $form->setAction('/admin/platform-add-process');
         });
     }
 
@@ -157,14 +157,14 @@ class StrategyController extends Controller
     {
         return Admin::form(Strategy::class, function (Form $form) use($id) {
 
-            $host = Host::find($id);
+            $platform = Platform::find($id);
 
             $form->display('id', 'ID');
-            $form->hidden('host_id')->value($id);
+            $form->hidden('platform_id')->value($id);
 
-            $form->display('host_name', '调度主机')->value($host->host_name);
-            $form->display('host_ip', '主机IP')->value($host->host_ip);
-            $form->display('host_sn', '主机SN')->value($host->host_sn);
+            $form->display('platform_name', '调度主机')->value($platform->platform_name);
+            $form->display('platform_ip', '主机IP')->value($platform->platform_ip);
+            $form->display('platform_sn', '主机SN')->value($platform->platform_sn);
             $form->divider();
             $form->text('file_name', '文件名');
             $form->text('file_size', '大小');
@@ -176,7 +176,7 @@ class StrategyController extends Controller
             
             // $form->ignore();
             // $form->setWidth(10, 2);
-            $form->setAction('/admin/host-add-file');
+            $form->setAction('/admin/platform-add-file');
         });
     }
 
@@ -198,7 +198,7 @@ class StrategyController extends Controller
     {
         $request_data = $request->input();
 
-        $host = Host::find($request_data['host_id']);
+        $platform = Platform::find($request_data['platform_id']);
         $xml_data = array(
                         'module' => 'user_manage',
                         'func' => 'add',
@@ -206,41 +206,41 @@ class StrategyController extends Controller
                             'username' => $request_data['username'],
                             'passwd' => $request_data['passwd'],
                             'role' => $request_data['role'],
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
         if($socket_response) {
             $strategy = new Strategy;
 
-            $strategy->host_id = $host->id;
+            $strategy->platform_id = $platform->id;
             $strategy->author = Admin::user()->id;
             $strategy->module = 'user_manage';
             $strategy->func = 'add';
             $strategy->info_username = $request_data['username'];
             $strategy->info_passwd = $request_data['passwd'];
             $strategy->info_role = $request_data['role'];
-            $strategy->info_platform_name = $host->host_name;
-            $strategy->info_platform_sn = $host->host_sn;
-            $strategy->info_platform_ip = $host->host_ip;
+            $strategy->info_platform_name = $platform->platform_name;
+            $strategy->info_platform_sn = $platform->platform_sn;
+            $strategy->info_platform_ip = $platform->platform_ip;
 
             $strategy->save();
         }
 
-        return redirect('/admin/host-add-user/' . $request_data['host_id'] . '/用户' . $request_data['username'] . '添加成功!');
+        return redirect('/admin/platform-add-user/' . $request_data['platform_id'] . '/用户' . $request_data['username'] . '添加成功!');
     }
 
     public function delUser($id)
     {
         $strategy = Strategy::find($id);
         
-        $host = Host::find($strategy->host_id);
+        $platform = Platform::find($strategy->platform_id);
 
         $xml_data = array(
                         'module' => 'user_manage',
@@ -249,13 +249,13 @@ class StrategyController extends Controller
                             'username' => $strategy->info_username,
                             'passwd' => '',
                             'role' => '',
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -263,7 +263,7 @@ class StrategyController extends Controller
             $strategy->delete();
         }
 
-        return redirect('/admin/host/' . $request_data['host_id']);
+        return redirect('/admin/platform/' . $request_data['platform_id']);
     }
 
     public function addProcess($id, $msg='')
@@ -283,7 +283,7 @@ class StrategyController extends Controller
     {
         $request_data = $request->input();
 
-        $host = Host::find($request_data['host_id']);
+        $platform = Platform::find($request_data['platform_id']);
         $xml_data = array(
                         'module' => 'process_manage',
                         'func' => 'add',
@@ -291,41 +291,41 @@ class StrategyController extends Controller
                             'process_name' => $request_data['process_name'],
                             'process_size' => $request_data['process_size'],
                             'process_hash' => $request_data['process_hash'],
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
         if($socket_response) {
             $strategy = new Strategy;
 
-            $strategy->host_id = $host->id;
+            $strategy->platform_id = $platform->id;
             $strategy->author = Admin::user()->id;
             $strategy->module = 'process_manage';
             $strategy->func = 'add';
             $strategy->info_process_name = $request_data['process_name'];
             $strategy->info_process_size = $request_data['process_size'];
             $strategy->info_process_hash = $request_data['process_hash'];
-            $strategy->info_platform_name = $host->host_name;
-            $strategy->info_platform_sn = $host->host_sn;
-            $strategy->info_platform_ip = $host->host_ip;
+            $strategy->info_platform_name = $platform->platform_name;
+            $strategy->info_platform_sn = $platform->platform_sn;
+            $strategy->info_platform_ip = $platform->platform_ip;
 
             $rst = $strategy->save();
         }
 
-        return redirect('/admin/host-add-process/' . $request_data['host_id'] . '/策略' . $request_data['process_name'] . '添加成功!');
+        return redirect('/admin/platform-add-process/' . $request_data['platform_id'] . '/策略' . $request_data['process_name'] . '添加成功!');
     }
 
     public function delProcess($id)
     {
         $strategy = Strategy::find($id);
         
-        $host = Host::find($strategy->host_id);
+        $platform = Platform::find($strategy->platform_id);
 
         $xml_data = array(
                         'module' => 'file_manage',
@@ -334,13 +334,13 @@ class StrategyController extends Controller
                             'process_name' => $strategy->info_process_name,
                             'process_size' => $strategy->info_process_size,
                             'process_hash' => $strategy->info_process_hash,
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -348,7 +348,7 @@ class StrategyController extends Controller
             $strategy->delete();
         }
 
-        return redirect('/admin/host/' . $strategy->host_id);
+        return redirect('/admin/platform/' . $strategy->platform_id);
     }
 
     public function addFile($id, $msg='')
@@ -368,7 +368,7 @@ class StrategyController extends Controller
     {
         $request_data = $request->input();
 
-        $host = Host::find($request_data['host_id']);
+        $platform = Platform::find($request_data['platform_id']);
         $xml_data = array(
                         'module' => 'process_manage',
                         'func' => 'add',
@@ -379,20 +379,20 @@ class StrategyController extends Controller
                             'file_opt' => $request_data['file_opt'],
                             'active_starttime' => $request_data['active_starttime'],
                             'active_endtime' => $request_data['active_endtime'],
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
         if($socket_response) {
             $strategy = new Strategy;
 
-            $strategy->host_id = $host->id;
+            $strategy->platform_id = $platform->id;
             $strategy->author = Admin::user()->id;
             $strategy->module = 'file_manage';
             $strategy->func = 'add';
@@ -402,21 +402,21 @@ class StrategyController extends Controller
             $strategy->info_file_opt = $request_data['file_opt'];
             $strategy->info_active_starttime = $request_data['active_starttime'];
             $strategy->info_active_endtime = $request_data['active_endtime'];
-            $strategy->info_platform_name = $host->host_name;
-            $strategy->info_platform_sn = $host->host_sn;
-            $strategy->info_platform_ip = $host->host_ip;
+            $strategy->info_platform_name = $platform->platform_name;
+            $strategy->info_platform_sn = $platform->platform_sn;
+            $strategy->info_platform_ip = $platform->platform_ip;
 
             $strategy->save();
         }
 
-        return redirect('/admin/host-add-file/' . $request_data['host_id'] . '/文件' . $request_data['file_name'] . '添加成功!');
+        return redirect('/admin/platform-add-file/' . $request_data['platform_id'] . '/文件' . $request_data['file_name'] . '添加成功!');
     }
 
     public function delFile($id)
     {
         $strategy = Strategy::find($id);
         
-        $host = Host::find($strategy->host_id);
+        $platform = Platform::find($strategy->platform_id);
 
         $xml_data = array(
                         'module' => 'file_manage',
@@ -428,13 +428,13 @@ class StrategyController extends Controller
                             'file_opt' => $strategy->info_file_opt,
                             'active_starttime' => $strategy->info_active_starttime,
                             'active_endtime' => $strategy->info_active_endtime,
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_remote_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
@@ -442,6 +442,6 @@ class StrategyController extends Controller
             $strategy->delete();
         }
 
-        return redirect('/admin/host/' . $strategy->host_id);
+        return redirect('/admin/platform/' . $strategy->platform_id);
     }
 }

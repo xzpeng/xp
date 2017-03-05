@@ -10,9 +10,9 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
 
-    $router->resource('hosts', HostController::class);
+    $router->resource('platforms', PlatformController::class);
 
-    $router->get('host/{id}', 'HostController@show');
+    $router->get('platform/{id}', 'PlatformController@show');
 
 
     $router->resource('strategies', StrategyController::class);
@@ -20,26 +20,26 @@ Route::group([
     $router->resource('files', FileController::class);
 
 
-    $router->resource('install-software', HostSoftwareController::class);
-    $router->post('host-software-application', 'HostSoftwareController@postHostSoftwareApplication');
-    $router->get('software-install/{id}', 'HostSoftwareController@softwareInstall');
+    $router->resource('install-software', PlatformSoftwareController::class);
+    $router->post('platform-software-application', 'PlatformSoftwareController@postPlatformSoftwareApplication');
+    $router->get('software-install/{id}', 'PlatformSoftwareController@softwareInstall');
 
-    $router->resource('upload-file', HostFileController::class);
-    $router->post('host-file-application', 'HostFileController@postHostFileApplication');
-    $router->get('file-upload/{id}', 'HostFileController@fileUpload');
+    $router->resource('upload-file', PlatformFileController::class);
+    $router->post('platform-file-application', 'PlatformFileController@postPlatformFileApplication');
+    $router->get('file-upload/{id}', 'PlatformFileController@fileUpload');
 
 
-    $router->get('host-add-user/{id}/{msg?}', 'StrategyController@addUser');
-    $router->post('host-add-users', 'StrategyController@postAddUser');
-    $router->get('host-del-user/{id}', 'StrategyController@delUser');
+    $router->get('platform-add-user/{id}/{msg?}', 'StrategyController@addUser');
+    $router->post('platform-add-users', 'StrategyController@postAddUser');
+    $router->get('platform-del-user/{id}', 'StrategyController@delUser');
 
-    $router->get('host-add-process/{id}/{msg?}', 'StrategyController@addProcess');
-    $router->post('host-add-process', 'StrategyController@postAddProcess');
-    $router->get('host-del-process/{id}', 'StrategyController@delProcess');
+    $router->get('platform-add-process/{id}/{msg?}', 'StrategyController@addProcess');
+    $router->post('platform-add-process', 'StrategyController@postAddProcess');
+    $router->get('platform-del-process/{id}', 'StrategyController@delProcess');
 
-    $router->get('host-add-file/{id}/{msg?}', 'StrategyController@addFile');
-    $router->post('host-add-file', 'StrategyController@postAddFile');
-    $router->get('host-del-file/{id}', 'StrategyController@delFile');
+    $router->get('platform-add-file/{id}/{msg?}', 'StrategyController@addFile');
+    $router->post('platform-add-file', 'StrategyController@postAddFile');
+    $router->get('platform-del-file/{id}', 'StrategyController@delFile');
 
 
 });

@@ -2,8 +2,8 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\HostSoftware;
-use App\Models\Host;
+use App\Models\PlatformSoftware;
+use App\Models\Platform;
 use App\Models\Software;
 
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
-class HostSoftwareController extends Controller
+class PlatformSoftwareController extends Controller
 {
     use ModelForm;
 
@@ -69,23 +69,23 @@ class HostSoftwareController extends Controller
     }
 
     /**
-     * [postHostSoftwareApplication description]
+     * [postPlatformSoftwareApplication description]
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function postHostSoftwareApplication(Request $request)
+    public function postPlatformSoftwareApplication(Request $request)
     {
-        $host_ids = $request->input('host_ids');
+        $platform_ids = $request->input('platform_ids');
         $software_ids = $request->input('software_ids');
 
-        array_pop($host_ids);
+        array_pop($platform_ids);
         array_pop($software_ids);
 
         $rst = [];
 
-        foreach ($host_ids as $host_id) {
+        foreach ($platform_ids as $platform_id) {
             foreach ($software_ids as $software_id) {
-                $rst[] = HostSoftware::firstOrCreate(['host_id' => (int)$host_id, 'software_id' => (int)$software_id]);
+                $rst[] = PlatformSoftware::firstOrCreate(['platform_id' => (int)$platform_id, 'software_id' => (int)$software_id]);
             }
         }
 
@@ -100,10 +100,10 @@ class HostSoftwareController extends Controller
      */
     public function softwareInstall($id)
     {
-        $host_software = HostSoftware::find($id);
+        $platform_software = PlatformSoftware::find($id);
 
-        $host = Host::find($host_software->host_id);
-        $software = Software::find($host_software->software_id);
+        $platform = Platform::find($platform_software->platform_id);
+        $software = Software::find($platform_software->software_id);
 
         $xml_data = array(
                         'module' => 'soft_manage',
@@ -111,19 +111,19 @@ class HostSoftwareController extends Controller
                         'info' => array(
                             'soft_name' => $software->name,
                             'soft_path' => config('filesystems.disks.admin.root') . '/' . $software->path,
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_local_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_local_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
         if($socket_response) {
-            $host_software->status = 1;
-            $host_software->save();
+            $platform_software->status = 1;
+            $platform_software->save();
         }
 
         return redirect()->back();
@@ -136,13 +136,13 @@ class HostSoftwareController extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(HostSoftware::class, function (Grid $grid) {
+        return Admin::grid(PlatformSoftware::class, function (Grid $grid) {
 
             // $grid->id('ID')->sortable();
 
-            $grid->host_id('主机信息')->display(function ($host_id) {
-                $host = Host::find($host_id);
-                return $host->host_name . '/' . $host->host_ip . '/' . $host->host_sn;
+            $grid->platform_id('主机信息')->display(function ($platform_id) {
+                $platform = Platform::find($platform_id);
+                return $platform->platform_name . '/' . $platform->platform_ip . '/' . $platform->platform_sn;
             });
             $grid->software_id('软件')->display(function ($software_id) {
                 return Software::find($software_id)->name;
@@ -192,16 +192,16 @@ class HostSoftwareController extends Controller
      */
     protected function form()
     {
-        return Admin::form(HostSoftware::class, function (Form $form) {
+        return Admin::form(PlatformSoftware::class, function (Form $form) {
 
             $form->display('id', 'ID');
-            $form->multipleSelect('host_ids', '主机')->options(Host::all()->pluck('host_name', 'id'))->attribute(['required'=>'required']);
+            $form->multipleSelect('platform_ids', '主机')->options(Platform::all()->pluck('platform_name', 'id'))->attribute(['required'=>'required']);
             $form->multipleSelect('software_ids', '软件')->options(Software::all()->pluck('name', 'id'))->attribute(['required'=>'required']);
 
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
 
-            $form->setAction('/admin/host-software-application');
+            $form->setAction('/admin/platform-software-application');
         });
     }
 }

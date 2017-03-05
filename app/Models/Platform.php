@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Host extends Model
+class Platform extends Model
 {
     /**
      * Get strategies

@@ -10,8 +10,8 @@ class Strategy extends Model
      * [host description]
      * @return [type] [description]
      */
-    public function host()
+    public function platform()
     {
-    	return $this->belongTo('App\Models\Host');
+    	return $this->belongTo('App\Models\Platform');
     }
 }

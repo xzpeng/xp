@@ -2,8 +2,8 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\HostFile;
-use App\Models\Host;
+use App\Models\PlatformFile;
+use App\Models\Platform;
 use App\Models\File;
 
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
-class HostFileController extends Controller
+class PlatformFileController extends Controller
 {
     use ModelForm;
 
@@ -69,24 +69,24 @@ class HostFileController extends Controller
     }
 
     /**
-     * [postHostFileApplication description]
+     * [postPlatformFileApplication description]
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function postHostFileApplication(Request $request)
+    public function postPlatformFileApplication(Request $request)
     {
-        $host_ids = $request->input('host_ids');
+        $platform_ids = $request->input('platform_ids');
         $file_ids = $request->input('file_ids');
         $upload_path = $request->input('upload_path');
 
-        array_pop($host_ids);
+        array_pop($platform_ids);
         array_pop($file_ids);
 
         $rst = [];
 
-        foreach ($host_ids as $host_id) {
+        foreach ($platform_ids as $platform_id) {
             foreach ($file_ids as $file_id) {
-                $rst[] = HostFile::firstOrCreate(['host_id' => (int)$host_id, 'file_id' => (int)$file_id, 'upload_path' => $upload_path]);
+                $rst[] = PlatformFile::firstOrCreate(['platform_id' => (int)$platform_id, 'file_id' => (int)$file_id, 'upload_path' => $upload_path]);
             }
         }
 
@@ -100,10 +100,10 @@ class HostFileController extends Controller
      */
     public function fileUpload($id)
     {
-        $host_file = HostFile::find($id);
+        $platform_file = PlatformFile::find($id);
 
-        $host = Host::find($host_file->host_id);
-        $file = File::find($host_file->file_id);
+        $platform = Platform::find($platform_file->platform_id);
+        $file = File::find($platform_file->file_id);
 
         $xml_data = array(
                         'module' => 'file_manage',
@@ -111,20 +111,20 @@ class HostFileController extends Controller
                         'info' => array(
                             'file_name' => $file->name,
                             'soft_path' => config('filesystems.disks.admin.root') . '/' . $file->path,
-                            'upload_path' => $host_file->upload_path,
-                            'platform_name' => $host->host_name,
-                            'platform_sn' => $host->host_sn,
-                            'platform_ip' => $host->host_ip,
+                            'upload_path' => $platform_file->upload_path,
+                            'platform_name' => $platform->platform_name,
+                            'platform_sn' => $platform->platform_sn,
+                            'platform_ip' => $platform->platform_ip,
                         )
                     );
 
-        $socketClient = new \App\SocketClient($host->host_ip, config('app.socket_local_port'), $xml_data);
+        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_local_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
         if($socket_response) {
-            $host_file->status = 1;
-            $host_file->save();
+            $platform_file->status = 1;
+            $platform_file->save();
         }
 
         return redirect()->back();
@@ -137,13 +137,13 @@ class HostFileController extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(HostFile::class, function (Grid $grid) {
+        return Admin::grid(PlatformFile::class, function (Grid $grid) {
 
             // $grid->id('ID')->sortable();
 
-            $grid->host_id('主机信息')->display(function ($host_id) {
-                $host = Host::find($host_id);
-                return $host->host_name . '/' . $host->host_ip . '/' . $host->host_sn;
+            $grid->platform_id('主机信息')->display(function ($platform_id) {
+                $platform = Platform::find($platform_id);
+                return $platform->platform_name . '/' . $platform->platform_ip . '/' . $platform->platform_sn;
             });
             $grid->file_id('文件')->display(function ($file_id) {
                 return File::find($file_id)->name;
@@ -194,17 +194,17 @@ class HostFileController extends Controller
      */
     protected function form()
     {
-        return Admin::form(HostFile::class, function (Form $form) {
+        return Admin::form(PlatformFile::class, function (Form $form) {
 
             $form->display('id', 'ID');
-            $form->multipleSelect('host_ids', '主机')->options(Host::all()->pluck('host_name', 'id'))->attribute(['required'=>'required']);
+            $form->multipleSelect('platform_ids', '主机')->options(Platform::all()->pluck('platform_name', 'id'))->attribute(['required'=>'required']);
             $form->multipleSelect('file_ids', '软件')->options(File::all()->pluck('name', 'id'))->attribute(['required'=>'required']);
             $form->text('upload_path', '上传路径');
 
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
 
-            $form->setAction('/admin/host-file-application');
+            $form->setAction('/admin/platform-file-application');
         });
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Software;
-use App\Models\Host;
-use App\Models\HostSoftware;
+use App\Models\Platform;
+use App\Models\PlatformSoftware;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;

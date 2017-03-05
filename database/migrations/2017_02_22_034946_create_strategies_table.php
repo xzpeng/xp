@@ -15,7 +15,7 @@ class CreateStrategiesTable extends Migration
         Schema::create('strategies', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('host_id')->comment('The id in hosts table');
+            $table->integer('platform_id')->comment('The id in platforms table');
             $table->integer('author')->comment('Who added this strategy');
             $table->string('module');
             $table->string('func');
@@ -34,6 +34,12 @@ class CreateStrategiesTable extends Migration
             $table->string('info_platform_name');
             $table->string('info_platform_sn');
             $table->string('info_platform_ip');
+            $table->string('info_remote_name')->comment('远程计算机名');
+            $table->string('info_remote_sn')->comment('远程计算机序列号');
+            $table->string('info_remote_ip')->comment('远程计算机IP');
+            $table->string('info_remote_un')->comment('远程计算机用户名');
+            $table->string('info_remote_up')->comment('远程计算机密码');
+            $table->string('info_soft_path')->comment('软件路径');
             $table->smallInteger('is_deleted')->default(0);
             
             $table->timestamps();
