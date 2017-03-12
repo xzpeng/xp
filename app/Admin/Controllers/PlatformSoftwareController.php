@@ -120,7 +120,7 @@ class PlatformSoftwareController extends Controller
                         )
                     );
 
-        $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_local_port'), $xml_data);
+        $socketClient = new \App\SocketClient('127.0.0.1', config('app.socket_local_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
