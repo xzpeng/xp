@@ -110,7 +110,7 @@ class PlatformSoftwareController extends Controller
                         'func' => 'install_securitysoft',
                         'info' => array(
                             'securitysoft_name' => $software->name,
-                            'securitysoft_dir' => config('filesystems.disks.admin.root') . '/file/' ,
+                            'securitysoft_dir' => config('filesystems.disks.admin.root') . '/' . $software->path,
                             'dst_platform_name' => $platform->platform_name,
                             'dst_platform_sn' => $platform->platform_sn,
                             'dst_platform_ip' => $platform->platform_ip,
