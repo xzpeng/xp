@@ -147,7 +147,10 @@ class PlatformSoftwareController extends Controller
             $content->header('安装信息');
             // $content->description('主机信息查看、管理……');
             $log_file = config('filesystems.disks.admin.root') . '/' . $software->path.'.log';
+
+
             $info_html = file_get_contents($log_file);
+            str_replace("\n", '<br>', $info_html);
 
             $actions_box = new Box('操作', $info_html);
             $content->row($actions_box);
