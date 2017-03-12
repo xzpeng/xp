@@ -50,9 +50,9 @@ class PlatformController extends Controller
 
             $tab = new Tab();
 
-            if($platform_stat = json_decode($platform->platform_stat, true)) {
-                $cpu_stat = isset($platform_stat['cpu'])?$platform_stat['cpu']:0;
-                $memory_stat = ( isset($platform_stat['memory'])&&isset($platform_stat['memory']['available'])&&isset($platform_stat['memory']['total']) )?round(($platform_stat['memory']['available']*100/$platform_stat['memory']['total']), 1):0;
+            if($updated_status_time = json_decode($platform->updated_status_time, true)) {
+                $cpu_stat = isset($updated_status_time['cpu'])?$updated_status_time['cpu']:0;
+                $memory_stat = ( isset($updated_status_time['memory'])&&isset($updated_status_time['memory']['available'])&&isset($updated_status_time['memory']['total']) )?round(($updated_status_time['memory']['available']*100/$updated_status_time['memory']['total']), 1):0;
             } else {
                 $cpu_stat = 0;
                 $memory_stat = 0;
@@ -60,7 +60,7 @@ class PlatformController extends Controller
             $cpu_stat_class = $cpu_stat<50?'progress-bar-success':($cpu_stat>75?'progress-bar-danger':'progress-bar-warning');
             $memory_stat_class = $memory_stat<50?'progress-bar-success':($memory_stat>75?'progress-bar-danger':'progress-bar-warning');
 
-            $platform_status = $platform->status?'<span class="label label-info">Alive</span>':'<span class="label label-default">Dead</span>';
+            $platform_alive = $platform->alive?'<span class="label label-info">Alive</span>':'<span class="label label-default">Dead</span>';
 
 
             $info_html = <<<HTML
@@ -119,7 +119,7 @@ class PlatformController extends Controller
     <tr>
         <td>状态：</td>
         <td>
-        $platform_status
+        $platform_alive
     </tr>
 </table>
 </div>
@@ -235,7 +235,7 @@ HTML;
             /*$grid->cpu('CPU')->progressBar();
             $grid->memory('内存')->progressBar();
             $grid->disk('存储')->progressBar('warning');*/
-            $grid->status('状态')->switch($states);
+            $grid->alive('状态')->switch($states);
 
             $grid->created_at();
             $grid->updated_at();
@@ -262,7 +262,7 @@ HTML;
             $form->text('platform_name', '主机名');
             $form->text('platform_ip', 'IP地址');
             $form->text('platform_sn', '序列号');
-            $form->text('status', '状态');
+            $form->text('alive', '状态');
 
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');

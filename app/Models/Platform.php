@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Platform extends Model
 {
+    protected $table = 'platform_main';
     /**
      * Get strategies
      * @return [type] [description]
