@@ -15,6 +15,9 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
+use Encore\Admin\Widgets\Box;
+
+
 class PlatformSoftwareController extends Controller
 {
     use ModelForm;
