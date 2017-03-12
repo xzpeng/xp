@@ -187,7 +187,7 @@ class StrategyController extends Controller
 
             $content->header('添加用户');
             if($msg){
-                $content->description($msg);
+                $content->description(base64_decode($msg));
             }
 
             $content->body($this->formAddUser($id));
@@ -233,7 +233,7 @@ class StrategyController extends Controller
             $strategy->save();
         }
 
-        return redirect('/admin/platform-add-user/' . $request_data['platform_id'] . '/用户' . $request_data['username'] . '添加成功!');
+        return redirect('/admin/platform-add-user/' . $request_data['platform_id'] . '/' . base64_encode('用户' . $request_data['username'] . '添加成功!') );
     }
 
     public function delUser($id)
@@ -318,7 +318,7 @@ class StrategyController extends Controller
             $rst = $strategy->save();
         }
 
-        return redirect('/admin/platform-add-process/' . $request_data['platform_id'] . '/策略' . base64_encode($request_data['process_name']) . '添加成功!');
+        return redirect('/admin/platform-add-process/' . $request_data['platform_id'] . '/' . base64_encode('策略' . $request_data['process_name'] . '添加成功!') );
     }
 
     public function delProcess($id)
@@ -357,7 +357,7 @@ class StrategyController extends Controller
 
             $content->header('添加文件');
             if($msg){
-                $content->description($msg);
+                $content->description(base64_decode($msg));
             }
 
             $content->body($this->formAddFile($id));
@@ -409,7 +409,7 @@ class StrategyController extends Controller
             $strategy->save();
         }
 
-        return redirect('/admin/platform-add-file/' . $request_data['platform_id'] . '/文件' . $request_data['file_name'] . '添加成功!');
+        return redirect('/admin/platform-add-file/' . $request_data['platform_id'] . '/' . base64_encode('文件' . $request_data['file_name'] . '添加成功!') );
     }
 
     public function delFile($id)
