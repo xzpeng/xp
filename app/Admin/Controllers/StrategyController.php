@@ -272,7 +272,7 @@ class StrategyController extends Controller
 
             $content->header('添加策略');
             if($msg){
-                $content->description($msg);
+                $content->description( base64_decode($msg));
             }
 
             $content->body($this->formAddProcess($id));
@@ -318,7 +318,7 @@ class StrategyController extends Controller
             $rst = $strategy->save();
         }
 
-        return redirect('/admin/platform-add-process/' . $request_data['platform_id'] . '/策略' . $request_data['process_name'] . '添加成功!');
+        return redirect('/admin/platform-add-process/' . $request_data['platform_id'] . '/策略' . base64_encode($request_data['process_name']) . '添加成功!');
     }
 
     public function delProcess($id)
