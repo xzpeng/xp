@@ -128,6 +128,7 @@ class PlatformSoftwareController extends Controller
         $socketClient->close();
 
         if($socket_response) {
+            file_put_contents(config('filesystems.disks.admin.root') . '/' . $software->path.'.log', '');
             $platform_software->status = 1;
             $platform_software->save();
         }
