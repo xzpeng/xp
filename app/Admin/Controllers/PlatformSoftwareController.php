@@ -150,7 +150,7 @@ class PlatformSoftwareController extends Controller
 
 
             $info_html = file_get_contents($log_file);
-            str_replace("\n", '<br>', $info_html);
+            $info_html = str_replace("\n", '<br>', $info_html);
 
             $actions_box = new Box('操作', $info_html);
             $content->row($actions_box);
