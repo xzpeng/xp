@@ -63,7 +63,6 @@ class SocketClient
 		$length = str_pad($len, 6, '0', STR_PAD_LEFT);
 		$write_header_rst = socket_write($this->socket, $type.$length, strlen($type.$length));
 		$header_response = socket_read($this->socket, 8);
-dd($header_response);
 
 
 		$write_rst = socket_write($this->socket, $this->cmdxml, strlen($this->cmdxml));
