@@ -75,7 +75,7 @@ class SocketClient
 		$header_recv = socket_read($this->socket, 8);
 
 		if($header_recv) {
-			while($header_recv = socket_read($this->socket, $header_recv))
+			while($response = socket_read($this->socket, $header_recv))
 			{
 				return new \SimpleXMLElement($response);
 			}
