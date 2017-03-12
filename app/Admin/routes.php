@@ -23,6 +23,7 @@ Route::group([
     $router->resource('install-software', PlatformSoftwareController::class);
     $router->post('platform-software-application', 'PlatformSoftwareController@postPlatformSoftwareApplication');
     $router->get('software-install/{id}', 'PlatformSoftwareController@softwareInstall');
+    $router->get('software-installing/{id}', 'PlatformSoftwareController@softwareInstalling');
 
     $router->resource('upload-file', PlatformFileController::class);
     $router->post('platform-file-application', 'PlatformFileController@postPlatformFileApplication');

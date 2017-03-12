@@ -106,14 +106,17 @@ class PlatformSoftwareController extends Controller
         $software = Software::find($platform_software->software_id);
 
         $xml_data = array(
-                        'module' => 'soft_manage',
-                        'func' => 'install',
+                        'module' => 'remotefile_manage',
+                        'func' => 'install_securitysoft',
                         'info' => array(
-                            'soft_name' => $software->name,
-                            'soft_path' => config('filesystems.disks.admin.root') . '/' . $software->path,
-                            'platform_name' => $platform->platform_name,
-                            'platform_sn' => $platform->platform_sn,
-                            'platform_ip' => $platform->platform_ip,
+                            'securitysoft_name' => $software->name,
+                            'securitysoft_dir' => config('filesystems.disks.admin.root') . '/file/' ,
+                            'dst_platform_name' => $platform->platform_name,
+                            'dst_platform_sn' => $platform->platform_sn,
+                            'dst_platform_ip' => $platform->platform_ip,
+                            'dst_platform_user' => 'root',
+                            'dst_platform_passwd' => '123456',
+                            'install_log' => config('filesystems.disks.admin.root') . '/' . $software->path.'log'
                         )
                     );
 
@@ -127,6 +130,25 @@ class PlatformSoftwareController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function softwareInstalling($id)
+    {
+        
+        return Admin::content(function (Content $content) use($id) {
+            $platform_software = PlatformSoftware::find($id);
+
+            $platform = Platform::find($platform_software->platform_id);
+            $software = Software::find($platform_software->software_id);
+
+            $content->header('安装信息');
+            // $content->description('主机信息查看、管理……');
+            $log_file = config('filesystems.disks.admin.root') . '/' . $software->path.'log';
+            $info_html = file_get_contents($log_file);
+
+            $actions_box = new Box('操作', $info_html);
+            $content->row($actions_box);
+        });
     }
 
     /**
