@@ -328,7 +328,7 @@ class StrategyController extends Controller
         $platform = Platform::find($strategy->platform_id);
 
         $xml_data = array(
-                        'module' => 'file_manage',
+                        'module' => 'process_manage',
                         'func' => 'del',
                         'info' => array(
                             'process_name' => $strategy->info_process_name,
