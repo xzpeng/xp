@@ -61,9 +61,10 @@ class SocketClient
 		$type = str_pad($type, 2, '0', STR_PAD_LEFT);
 		$len = strlen($this->cmdxml);
 		$length = str_pad($len, 6, '0', STR_PAD_LEFT);
-		$write_header_rst = socket_write($this->socket, $type.$length, strlen($type.$length));
-		$header_response = socket_read($this->socket, 8);
 
+		if ( socket_write($this->socket, $type.$length, strlen($type.$length)) == false ) {
+			throw new Exception( sprintf( "Unable to write to socket: %s", socket_strerror( socket_last_error() ) ) );
+		}
 
 		$write_rst = socket_write($this->socket, $this->cmdxml, strlen($this->cmdxml));
 		if(!$write_rst) {
@@ -71,9 +72,15 @@ class SocketClient
 			return false;
 		}
 
-		while($response = socket_read($this->socket, 8192))
-		{
-			return new \SimpleXMLElement($response);
+		$header_recv = socket_read($this->socket, 8);
+
+		if($header_recv) {
+			while($header_recv = socket_read($this->socket, $header_recv))
+			{
+				return new \SimpleXMLElement($response);
+			}
+		} else {
+			dd($header_recv);
 		}
 	}
 
