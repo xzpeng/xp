@@ -16,7 +16,33 @@ class SocketClient
 		$this->cmdxml = self::create_cmdxml($xml_data);
 	}
 
-	public function send()
+	public function sendHeader($type=1)
+	{
+		$type = str_pad($type, 2, '0', STR_PAD_LEFT);
+		$len = strlen($this->cmdxml);
+		$length = str_pad($len, 6, '0', STR_PAD_LEFT);
+
+		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+
+		$conn_rst = socket_connect($this->socket, $this->host, $this->port);
+		if($conn_rst < 0) {
+			// return 'socket_connect() failed./nReason: ($conn_rst) ' . socket_strerror($conn_rst);
+			return false;
+		}
+
+		$write_rst = socket_write($this->socket, $type.$length, 8);
+		if(!$write_rst) {
+			// return 'socket_write() failed: reason: ' . socket_strerror($write_rst);
+			return false;
+		}
+
+		while($response = socket_read($this->socket, 8192))
+		{
+			return new \SimpleXMLElement($response);
+		}
+	}
+
+	public function send($type=1)
 	{
 		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 
@@ -30,6 +56,15 @@ class SocketClient
 			// return 'socket_connect() failed./nReason: ($conn_rst) ' . socket_strerror($conn_rst);
 			return false;
 		}
+
+		// send header
+		$type = str_pad($type, 2, '0', STR_PAD_LEFT);
+		$len = strlen($this->cmdxml);
+		$length = str_pad($len, 6, '0', STR_PAD_LEFT);
+		$write_header_rst = socket_write($this->socket, $type.$length, strlen($type.$length));
+		$header_response = socket_read($this->socket, 8);
+dd($header_response);
+
 
 		$write_rst = socket_write($this->socket, $this->cmdxml, strlen($this->cmdxml));
 		if(!$write_rst) {
