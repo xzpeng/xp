@@ -50,12 +50,12 @@ class KexinPackageController extends Controller
                             )
                         );
 
-            $socketClient = new \App\SocketClient(config('app.socket_local_host'), config('app.socket_local_port'), $xml_data);
+            /*$socketClient = new \App\SocketClient(config('app.socket_local_host'), config('app.socket_local_port'), $xml_data);
             $socket_response = $socketClient->send();
             $socketClient->close();
-            
+            */
         }
-/*
+
         if(isset($socket_response) && !$socket_response) {
             return Admin::content(function (Content $content) use($id) {
 
@@ -70,7 +70,7 @@ class KexinPackageController extends Controller
             $content->header('文件信息');
 
             $content->body($this->gridContent($id));
-        });*/
+        });
     }
     /**
      * Edit interface.
