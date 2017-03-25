@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlatformFile extends Model
 {
-    protected $table = 'platform_file';
-	protected $fillable = ['platform_id', 'file_id', 'upload_path'];
+    protected $table = 'file_policy_config_records';
+	// protected $fillable = ['platform_id', 'file_id', 'upload_path'];
 }

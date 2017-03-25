@@ -16,14 +16,15 @@ Route::group([
 
 
     $router->resource('strategies', StrategyController::class);
-    $router->resource('softwares', SoftwareController::class);
+    $router->resource('securitysoft-packages', SecuritysoftController::class);
     $router->resource('files', FileController::class);
 
 
-    $router->resource('install-software', PlatformSoftwareController::class);
-    $router->post('platform-software-application', 'PlatformSoftwareController@postPlatformSoftwareApplication');
-    $router->get('software-install/{id}', 'PlatformSoftwareController@softwareInstall');
-    $router->get('software-installing/{id}', 'PlatformSoftwareController@softwareInstalling');
+    $router->resource('install-securitysoft', PlatformSecuritysoftController::class);
+
+    $router->post('platform-securitysoft-application', 'PlatformSecuritysoftController@postPlatformSecuritysoftApplication');
+    $router->get('securitysoft-install/{id}', 'PlatformSecuritysoftController@securitysoftInstall');
+    $router->get('securitysoft-installing/{id}', 'PlatformSecuritysoftController@securitysoftInstalling');
 
     $router->resource('upload-file', PlatformFileController::class);
     $router->post('platform-file-application', 'PlatformFileController@postPlatformFileApplication');

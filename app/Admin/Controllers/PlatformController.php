@@ -41,21 +41,23 @@ class PlatformController extends Controller
         return Admin::content(function (Content $content) use($id) {
             $platform = Platform::find($id);
 
-            $content->header('主机管理');
-            $content->description('主机信息查看、管理……');
+            $content->header('设备状态监控');
+            // $content->description('主机信息查看、管理……');
 
-            $actions_box = new Box('操作', '<a href="/admin/platform-add-user/' . $id . '">添加用户</a> | <a href="/admin/platform-add-process/' . $id . '">添加可执行策略</a> | <a href="/admin/platform-add-file/' . $id . '">添加文件策略</a>');
-            $content->row($actions_box);
+            //$actions_box = new Box('操作', '<a href="/admin/platform-add-user/' . $id . '">添加用户</a> | <a href="/admin/platform-add-process/' . $id . '">添加可执行策略</a> | <a href="/admin/platform-add-file/' . $id . '">添加文件策略</a>');
+            //$content->row($actions_box);
 
 
             $tab = new Tab();
 
-            if($updated_status_time = json_decode($platform->updated_status_time, true)) {
-                $cpu_stat = isset($updated_status_time['cpu'])?$updated_status_time['cpu']:0;
-                $memory_stat = ( isset($updated_status_time['memory'])&&isset($updated_status_time['memory']['available'])&&isset($updated_status_time['memory']['total']) )?round(($updated_status_time['memory']['available']*100/$updated_status_time['memory']['total']), 1):0;
+            if($platform_system_info = json_decode($platform->platform_system_info, true)) {
+                $cpu_stat = isset($platform_system_info['cpu'])?$platform_system_info['cpu']:0;
+                $memory_stat = ( isset($platform_system_info['memory'])&&isset($platform_system_info['memory']['available'])&&isset($platform_system_info['memory']['total']) )?round(($platform_system_info['memory']['available']*100/$platform_system_info['memory']['total']), 1):0;
+                $system_release = isset($platform_system_info['system_release'])?$platform_system_info['system_release']:'';
             } else {
                 $cpu_stat = 0;
                 $memory_stat = 0;
+                $system_release = '';
             }
             $cpu_stat_class = $cpu_stat<50?'progress-bar-success':($cpu_stat>75?'progress-bar-danger':'progress-bar-warning');
             $memory_stat_class = $memory_stat<50?'progress-bar-success':($memory_stat>75?'progress-bar-danger':'progress-bar-warning');
@@ -117,6 +119,10 @@ class PlatformController extends Controller
         </td>
     </tr>
     <tr>
+        <td>系统版本：</td>
+        <td>$system_release</td>
+    </tr>
+    <tr>
         <td>状态：</td>
         <td>
         $platform_alive
@@ -124,10 +130,16 @@ class PlatformController extends Controller
 </table>
 </div>
 HTML;
-            $info_box = new Box('基本信息', $info_html);
+            $info_box = new Box('主机信息', $info_html);
             $tab->add('主机信息', $info_box);
 
+            $process_box = new Box('进程信息', '进程信息');
+            $tab->add('进程信息', $process_box);
 
+            $network_box = new Box('网络信息', '网络信息');
+            $tab->add('网络信息', $network_box);
+
+/*
             $user_table_headers = ['用户名', '密码', '角色', '操作'];
             $user_table_rows = [];
             $user_rows = Platform::find($id)->strategies()->where('module', 'user_manage')->where('is_deleted', 0)->select(['id', 'info_username', 'info_passwd', 'info_role'])->get()->toArray();
@@ -172,7 +184,7 @@ HTML;
 
             $file_table = new Table($file_table_headers, $file_table_rows);
             $tab->add('文件管理', $file_table);
-            
+            */
 
             $content->row($tab);
 
@@ -226,25 +238,31 @@ HTML;
             $grid->platform_name('主机名')->editable();
             $grid->platform_ip('IP地址')->editable();
 
-            $states = [
-                'on' => ['text' => 'Alive'],
-                'off' => ['text' => 'Dead'],
-            ];
-
             $grid->platform_sn('序列号');
-            /*$grid->cpu('CPU')->progressBar();
-            $grid->memory('内存')->progressBar();
-            $grid->disk('存储')->progressBar('warning');*/
-            $grid->alive('状态')->switch($states);
+            $grid->column('alive', '状态')->display(function($alive) {
+                return $alive==1?'<span class="label label-success">Alive</span>':'<span class="label label-danger">Dead</span>';
+            });
 
-            $grid->created_at();
-            $grid->updated_at();
+            $grid->created_at('添加时间');
+            // $grid->updated_at();
 
             $grid->actions(function ($actions) {
                 $id = $actions->getKey();
                 $actions->disableEdit();
-                $actions->append('<a href="platform/' . $id . '"><i class="fa fa-eye"></i></a>');
+                $actions->disableDelete();
+                $actions->append('<a href="platform/' . $id . '">查看</a>');
+                $actions->append('&nbsp;|&nbsp;<a href="platform-process/' . $id . '">策略</a>');
+                $actions->append('&nbsp;|&nbsp;<a href="platform-files/' . $id . '">文件</a>');
             });
+
+            $grid->tools(function ($tools) {
+                $tools->batch(function ($batch) {
+                    $batch->disableDelete();
+                });
+            });
+            $grid->disableCreation();
+            $grid->disableFilter();
+            $grid->disableExport();
         });
     }
 

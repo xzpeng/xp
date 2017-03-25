@@ -68,8 +68,9 @@ return [
     'locale' => 'zh_CN',
 
 
-    'socket_remote_port' => env('APP_SOCKET_REMOTE_PORT', 9003),
+    'socket_local_host' => env('APP_SOCKET_LOCAL_HOST', '127.0.0.1'),
     'socket_local_port' => env('APP_SOCKET_LOCAL_PORT', 8008),
+    'socket_remote_port' => env('APP_SOCKET_REMOTE_PORT', 9003),
 
     /*
     |--------------------------------------------------------------------------

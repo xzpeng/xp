@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Platform extends Model
 {
     protected $table = 'platform_main';
+    protected $fillable = ['platform_name', 'platform_ip', 'platform_sn', 'alive', 'platform_root', 'platform_rootpwd', 'install_status', 'securitysoft_id'];
     /**
      * Get strategies
      * @return [type] [description]
