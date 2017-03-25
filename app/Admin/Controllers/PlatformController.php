@@ -251,8 +251,8 @@ HTML;
                 $actions->disableEdit();
                 $actions->disableDelete();
                 $actions->append('<a href="platform/' . $id . '">查看</a>');
-                $actions->append('&nbsp;|&nbsp;<a href="platform-process/' . $id . '">策略</a>');
-                $actions->append('&nbsp;|&nbsp;<a href="platform-files/' . $id . '">文件</a>');
+                /*$actions->append('&nbsp;|&nbsp;<a href="platform-process/' . $id . '">策略</a>');
+                $actions->append('&nbsp;|&nbsp;<a href="platform-files/' . $id . '">文件</a>');*/
             });
 
             $grid->tools(function ($tools) {
