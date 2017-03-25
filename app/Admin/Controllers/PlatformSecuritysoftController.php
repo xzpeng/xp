@@ -138,8 +138,8 @@ class PlatformSecuritysoftController extends Controller
         $socketClient->close();
 
         if($socket_response) {
-            $platform_software->status = 1;
-            $platform_software->save();
+            $platform->install_status = 1;
+            $platform->save();
         }
 
         return redirect()->back();
