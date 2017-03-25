@@ -12,15 +12,21 @@ Route::group([
 
     $router->resource('platforms', PlatformController::class);
 
-    $router->get('platform/{id}', 'PlatformController@show');
-
 
     $router->resource('strategies', StrategyController::class);
     $router->resource('securitysoft-packages', SecuritysoftController::class);
-    $router->resource('files', FileController::class);
+    $router->resource('kexin-packages', KexinPackageController::class);
+    $router->resource('whitelists', WhitelistController::class);
 
 
     $router->resource('install-securitysoft', PlatformSecuritysoftController::class);
+    $router->get('distribution-kexin-package/{id}', 'PlatformKexinPackageController@distribution');
+    $router->post('distributie-kexin-package', 'PlatformKexinPackageController@postDistribution');
+
+    $router->get('platform/{id}', 'PlatformController@show');
+    $router->get('kexin-package/{id}', 'KexinPackageController@show');
+
+
 
     $router->post('platform-securitysoft-application', 'PlatformSecuritysoftController@postPlatformSecuritysoftApplication');
     $router->get('securitysoft-install/{id}', 'PlatformSecuritysoftController@securitysoftInstall');

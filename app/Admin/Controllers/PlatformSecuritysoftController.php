@@ -161,8 +161,9 @@ class PlatformSecuritysoftController extends Controller
             $info_html = file_get_contents($log_file);
             $info_html = str_replace("\n", '<br>', $info_html);
 
-            $actions_box = new Box('操作', $info_html);
+            $actions_box = new Box('安装日志', $info_html);
             $content->row($actions_box);
+            Admin::script($this->script());
         });
     }
 
@@ -213,53 +214,6 @@ class PlatformSecuritysoftController extends Controller
             $grid->disableFilter();
             $grid->disableExport();
         });
-        /*return Admin::grid(PlatformSecuritysoft::class, function (Grid $grid) {
-
-            // $grid->id('ID')->sortable();
-
-            $grid->platform_id('主机信息')->display(function ($platform_id) {
-                $platform = Platform::find($platform_id);
-                return $platform->platform_name . '/' . $platform->platform_ip . '/' . $platform->platform_sn;
-            });
-            $grid->soft_id('软件')->display(function ($soft_id) {
-                return Securitysoft::find($soft_id)->name;
-            });
-            $grid->column('状态')->display(function(){
-                if($this->status == 0) {
-                    return '已申请';
-                } else if($this->status == 1) {
-                    return '安装中...';
-                } else if($this->status ==2) {
-                    return '已安装';
-                }
-            });
-
-            $grid->actions(function ($actions) {
-                $actions->disableDelete();
-                $actions->disableEdit();
-
-                if ($actions->row->status == 0) {
-                    $action_btn = '<a class="btn btn-primary btn-xs" href="' . url('/admin/software-install/' . $actions->row->id) . '">安装</a>';
-                } else if($actions->row->status == 1) {
-                    $action_btn = '<a class="btn btn-primary btn-xs" href="' . url('/admin/software-installing/' . $actions->row->id) . '">安装中...</a>';
-                } else if($actions->row->status == 2) {
-                    $action_btn = '<a class="btn btn-danger btn-xs" href="' . url('/admin/software-uninstall/' . $actions->row->id) . '">卸载</a>';
-                } else {
-                    $action_btn = '';
-                }
-
-                $actions->append($action_btn);
-            });
-
-            $grid->tools(function ($tools) {
-                $tools->batch(function ($batch) {
-                    $batch->disableDelete();
-                });
-            });
-
-            $grid->disableExport();
-
-        });*/
     }
 
     /**
@@ -287,4 +241,14 @@ class PlatformSecuritysoftController extends Controller
             $form->setAction('/admin/platform-securitysoft-application');
         });
     }
+
+    public function script()
+    {
+        return <<<EOT
+setTimeout(function(){
+    window.location.reload();
+},3000);
+EOT;
+    }
+
 }
