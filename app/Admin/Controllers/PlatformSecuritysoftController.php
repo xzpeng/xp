@@ -120,8 +120,8 @@ class PlatformSecuritysoftController extends Controller
                         'module' => 'remotefile_manage',
                         'func' => 'install_securitysoft',
                         'info' => array(
-                            'securitysoft_name' => $securitysoft->soft_name,
-                            'securitysoft_dir' => config('filesystems.disks.admin.root') . '/' . $securitysoft->soft_dir,
+                            'securitysoft_name' => config('filesystems.disks.admin.root') . '/' . $securitysoft->soft_dir,
+                            'securitysoft_dir' => '/',
                             'dst_platform_name' => $platform->platform_name,
                             'dst_platform_sn' => $platform->platform_sn,
                             'dst_platform_ip' => $platform->platform_ip,
