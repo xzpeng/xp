@@ -148,9 +148,11 @@ class KexinPackageController extends Controller
 
     protected function gridContent($id)
     {
-        return Admin::grid(KexinPackageContent::class, function (Grid $grid) {
+        return Admin::grid(KexinPackageContent::class, function (Grid $grid) use($id) {
             $grid->id('ID')->sortable();
             $grid->file_name('文件名');
+
+            $grid->model()->where('package_id', '', $id);
 
             $grid->tools(function ($tools) {
                 $tools->batch(function ($batch) {
