@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Models\PlatformKexinPackage;
 use App\Models\KexinPackage;
 use App\Models\Platform;
+use App\Models\KexinPackageTransferRecord;
 
 use Illuminate\Http\Request;
 
@@ -117,36 +118,45 @@ class PlatformKexinPackageController extends Controller
     }
 
     public function postDistribution(Request $request)
-    {/*
-        $package = KexinPackage::find($request->input('package_id'));
-        $platform = Platform::find($request->input('platform_id'));
+    {
+        $package_id = $request->input('package_id');
+        $platform_id = $request->input('platform_id');
+        $dst_file_dir = $request->input('dst_file_dir');
+
+        $package = KexinPackage::find($package_id);
+        $platform = Platform::find($platform_id);
 
         $xml_data = array(
                         'module' => 'remotefile_manage',
-                        'func' => 'install_securitysoft',
+                        'func' => 'packagetransfer',
                         'info' => array(
-                            'securitysoft_name' => config('filesystems.disks.admin.root') . '/' . $securitysoft->soft_dir,
-                            'securitysoft_dir' => '/',
-                            'dst_platform_name' => $platform->platform_name,
-                            'dst_platform_sn' => $platform->platform_sn,
+                            'src_file_name' => config('filesystems.disks.admin.root') . '/' . $package->package_dir,
                             'dst_platform_ip' => $platform->platform_ip,
-                            'dst_platform_user' => $platform->platform_root,
-                            'dst_platform_passwd' => $platform->platform_rootpwd,
-                            'install_log' => config('filesystems.disks.admin.root') . '/' . $securitysoft->soft_dir.'.log'
+                            'dst_file_dir' => $dst_file_dir
                         )
                     );
-
-        file_put_contents(config('filesystems.disks.admin.root') . '/' . $securitysoft->soft_dir.'.log', '');
 
         $socketClient = new \App\SocketClient(config('app.socket_local_host'), config('app.socket_local_port'), $xml_data);
         $socket_response = $socketClient->send();
         $socketClient->close();
 
+        $record = new KexinPackageTransferRecord;
+
+        $record->package_id = $package_id;
+        $record->platform_id = $platform_id;
+        $record->dst_file_dir = $dst_file_dir;
+        //$record->operation_at = ;
+
         if($socket_response) {
-            $platform->install_status = 1;
-            $platform->save();
+            if (strstr('success', $socket_response)) {
+                $record->operation_result = 'success';
+            } else {
+                $record->operation_result = 'failed';
+            }
         }
 
-        return redirect()->back();*/
+        $record->save();
+
+        return redirect()->back();
     }
 }
