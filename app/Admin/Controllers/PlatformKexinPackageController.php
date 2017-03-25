@@ -36,6 +36,17 @@ class PlatformKexinPackageController extends Controller
         });
     }
 
+    public function records($id)
+    {
+        return Admin::content(function (Content $content) use($id) {
+
+            $content->header('header');
+            $content->description('description');
+
+            $content->body($this->gridRecords($id));
+        });
+    }
+
     /**
      * Edit interface.
      *
@@ -82,6 +93,33 @@ class PlatformKexinPackageController extends Controller
 
             $grid->created_at();
             $grid->updated_at();
+        });
+    }
+
+    protected function gridRecords($id)
+    {
+        return Admin::grid(PlatformKexinPackage::class, function (Grid $grid) use($id) {
+
+            $grid->id('ID')->sortable();
+
+            $grid->platform_id('主机')->display(function($platform_id){
+                return Platform::find($platform_id)->platform_name;
+            });
+            $grid->content('可信程序');
+
+            $grid->created_at('下发时间');
+
+            $grid->model()->where('package_id', '=', $id);
+
+            $grid->tools(function ($tools) {
+                $tools->batch(function ($batch) {
+                    $batch->disableDelete();
+                });
+            });
+            $grid->disableActions();
+            $grid->disableCreation();
+            $grid->disableFilter();
+            $grid->disableExport();
         });
     }
 

@@ -22,6 +22,7 @@ Route::group([
     $router->resource('install-securitysoft', PlatformSecuritysoftController::class);
     $router->get('distribution-kexin-package/{id}', 'PlatformKexinPackageController@distribution');
     $router->post('distributie-kexin-package', 'PlatformKexinPackageController@postDistribution');
+    $router->get('distribution-records/{id}', 'PlatformKexinPackageController@records');
 
     $router->get('platform/{id}', 'PlatformController@show');
     $router->get('kexin-package/{id}', 'KexinPackageController@show');

@@ -116,15 +116,7 @@ class KexinPackageController extends Controller
 
             $grid->id('ID')->sortable();
             $grid->package_name('可信程序名称');
-            /*$grid->column('file_dir', '路径')->value(function($path){
-                if($path)
-                    return '<a href="' . config('admin.upload.host') . $path . '" target="_blank">下载</a>';
-                else
-                    return '';
-            });*/
-
             $grid->created_at('添加时间');
-            // $grid->updated_at();
 
             $grid->actions(function ($actions) {
                 $id = $actions->getKey();
