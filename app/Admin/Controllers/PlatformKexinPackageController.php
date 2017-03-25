@@ -150,9 +150,9 @@ class PlatformKexinPackageController extends Controller
 
         if($socket_response) {
             if (strstr('success', $socket_response)) {
-                $record->operation_result = 'success';
+                $record->operate_result = 'success';
             } else {
-                $record->operation_result = 'failed';
+                $record->operate_result = 'failed';
             }
         }
 
