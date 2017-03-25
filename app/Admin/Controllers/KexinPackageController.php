@@ -152,7 +152,7 @@ class KexinPackageController extends Controller
             $grid->id('ID')->sortable();
             $grid->file_name('文件名');
 
-            $grid->model()->where('package_id', '', $id);
+            $grid->model()->where('package_id', '=', $id);
 
             $grid->tools(function ($tools) {
                 $tools->batch(function ($batch) {
