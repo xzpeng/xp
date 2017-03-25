@@ -97,6 +97,7 @@ class PlatformKexinPackageController extends Controller
             $form->display('id', 'ID');
             $form->hidden('package_id')->value($id);
             $form->select('platform_id', '主机')->options(Platform::all()->pluck('platform_name', 'id'))->attribute(['required'=>'required']);
+            $form->text('dst_file_dir', '上传路径')->default('/home');
 
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
