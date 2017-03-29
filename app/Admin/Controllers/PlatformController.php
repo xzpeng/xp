@@ -51,8 +51,21 @@ class PlatformController extends Controller
             $tab = new Tab();
 
             if($platform_system_info = json_decode($platform->platform_system_info, true)) {
+                $boottime = $platform_system_info['boottime'];
                 $cpu_stat = isset($platform_system_info['cpu'])?$platform_system_info['cpu']:0;
                 $memory_stat = ( isset($platform_system_info['memory'])&&isset($platform_system_info['memory']['available'])&&isset($platform_system_info['memory']['total']) )?round(($platform_system_info['memory']['available']*100/$platform_system_info['memory']['total']), 1):0;
+
+                $disk_html = '';
+                foreach($platform_system_info['disk'] as $key => $value) {
+                    $disk_html .= '<div class="col-sm-8">'.$key.'
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: ' . $value['usage'] . '%">' . $value['usage'] . '
+                                      <span class="sr-only"></span>
+                                    </div>
+                                </div>
+                            </div>';
+                }
+
                 $system_release = isset($platform_system_info['system_release'])?$platform_system_info['system_release']:'';
             } else {
                 $cpu_stat = 0;
@@ -107,20 +120,16 @@ class PlatformController extends Controller
     <tr>
         <td>存储：</td>
         <td>
-            <!--
-            <div class="col-sm-8">
-                <div class="progress progress-sm">
-                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 73.5%">
-                      <span class="sr-only"></span>
-                    </div>
-                </div>
-            </div>
-            -->
+            $disk_html
         </td>
     </tr>
     <tr>
         <td>系统版本：</td>
         <td>$system_release</td>
+    </tr>
+    <tr>
+        <td>开机时间：</td>
+        <td>$boottime</td>
     </tr>
     <tr>
         <td>状态：</td>
@@ -131,13 +140,27 @@ class PlatformController extends Controller
 </div>
 HTML;
             $info_box = new Box('主机信息', $info_html);
-            $tab->add('主机信息', $info_box);
+            $tab->add('主机信息', $info_box, 'base_info');
 
+/*
+            $xml_data = array(
+                            'module' => 'system_info',
+                            'func' => 'process',
+                            'info' => array(
+                                'dst_platform_ip' => $platform->platform_ip
+                            )
+                        );
+
+            $socketClient = new \App\SocketClient(config('app.socket_local_host'), config('app.socket_local_port'), $xml_data);
+            $socket_response = $socketClient->send();
+            $socketClient->close();
+*/
+            $process_info = '';
             $process_box = new Box('进程信息', '进程信息');
-            $tab->add('进程信息', $process_box);
+            $tab->add('进程信息', $process_box, 'process');
 
             $network_box = new Box('网络信息', '网络信息');
-            $tab->add('网络信息', $network_box);
+            $tab->add('网络信息', $network_box, 'network');
 
 /*
             $user_table_headers = ['用户名', '密码', '角色', '操作'];
