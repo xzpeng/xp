@@ -61,7 +61,6 @@ class FolderController extends Controller
                         );
 
 	            $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
-                $socketClient->sendHeader();
                 $socket_response = $socketClient->send();
                 $socketClient->close();
 
@@ -113,7 +112,6 @@ class FolderController extends Controller
                         );
 
                 $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
-                $socketClient->sendHeader();
                 $socket_response = $socketClient->send();
                 $socketClient->close();
 
