@@ -44,10 +44,6 @@ class PlatformController extends Controller
             $content->header('设备状态监控');
             // $content->description('主机信息查看、管理……');
 
-            //$actions_box = new Box('操作', '<a href="/admin/platform-add-user/' . $id . '">添加用户</a> | <a href="/admin/platform-add-process/' . $id . '">添加可执行策略</a> | <a href="/admin/platform-add-file/' . $id . '">添加文件策略</a>');
-            //$content->row($actions_box);
-
-
             $tab = new Tab();
 
             if($platform_system_info = json_decode($platform->platform_system_info, true)) {
@@ -161,54 +157,7 @@ HTML;
 
             $network_box = new Box('网络信息', '网络信息');
             $tab->add('网络信息', $network_box, 'network');
-
-/*
-            $user_table_headers = ['用户名', '密码', '角色', '操作'];
-            $user_table_rows = [];
-            $user_rows = Platform::find($id)->strategies()->where('module', 'user_manage')->where('is_deleted', 0)->select(['id', 'info_username', 'info_passwd', 'info_role'])->get()->toArray();
-
-            foreach ($user_rows as $key => $user_row) {
-                $user_table_rows[$key][] = $user_row['info_username'];
-                $user_table_rows[$key][] = $user_row['info_passwd'];
-                $user_table_rows[$key][] = $user_row['info_role'];
-                $user_table_rows[$key][] = '<a href="/admin/platform-del-user/' . $user_row['id'] . '">删除</a>';
-            }
-
-            $user_table = new Table($user_table_headers, $user_table_rows);
-            $tab->add('用户管理', $user_table);
-
-            $process_table_headers = ['程序名', '程序大小', '程序hash', '操作'];
-            $process_table_rows = [];
-            $process_rows = Platform::find($id)->strategies()->where('module', 'process_manage')->where('is_deleted', 0)->select(['id', 'info_process_name', 'info_process_size', 'info_process_hash'])->get()->toArray();
             
-            foreach ($process_rows as $key => $process_row) {
-                $process_table_rows[$key][] = $process_row['info_process_name'];
-                $process_table_rows[$key][] = $process_row['info_process_size'];
-                $process_table_rows[$key][] = $process_row['info_process_hash'];
-                $process_table_rows[$key][] = '<a href="/admin/platform-del-process/' . $process_row['id'] . '">删除</a>';
-            }
-
-            $process_table = new Table($process_table_headers, $process_table_rows);
-            $tab->add('程序管理', $process_table);
-
-            $file_table_headers = ['文件名', '文件大小', '文件hash', '文件操作_opt', '生效时间', '结束时间', '操作'];
-            $file_table_rows = [];
-            $file_rows = Platform::find($id)->strategies()->where('module', 'file_manage')->where('is_deleted', 0)->select(['id', 'info_file_name', 'info_file_size', 'info_file_hash', 'info_file_opt', 'info_active_starttime', 'info_active_endtime'])->get()->toArray();
-
-            foreach ($file_rows as $key => $file_row) {
-                $file_table_rows[$key][] = $file_row['info_file_name'];
-                $file_table_rows[$key][] = $file_row['info_file_size'];
-                $file_table_rows[$key][] = $file_row['info_file_hash'];
-                $file_table_rows[$key][] = $file_row['info_file_opt'];
-                $file_table_rows[$key][] = $file_row['info_active_starttime'];
-                $file_table_rows[$key][] = $file_row['info_active_endtime'];
-                $file_table_rows[$key][] = '<a href="/admin/platform-del-file/' . $file_row['id'] . '">删除</a>';
-            }
-
-            $file_table = new Table($file_table_headers, $file_table_rows);
-            $tab->add('文件管理', $file_table);
-            */
-
             $content->row($tab);
 
         });
