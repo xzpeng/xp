@@ -108,7 +108,7 @@ class FolderController extends Controller
                             'module' => 'system_info',
                             'func' => 'query_dir',
                             'info' => array(
-                                'query_path' => '/'
+                                'query_path' => $parent_folder
                             )
                         );
 
