@@ -63,11 +63,9 @@ class FolderController extends Controller
 	            $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
                 $socket_response = $socketClient->send();
                 $socketClient->close();
-var_dump($socket_response);
-                $response = simplexml_load_string($socket_response);
-                var_dump($response);die;
-                if( strtolower($response->result)=='success' ) {
-                    $folders = $response->message->item;
+
+                if( strtolower($socket_response->result)=='success' ) {
+                    $folders = $socket_response->message->item;
                     foreach ($folders as $folder) {
                         if ($folder->file_type==2) {
                             $rows[][] = '<a href="/admin/search-folders/' . $pid . '?parent_folder=' . $folder->file_name . '">' . $folder->file_name . '</a>';
