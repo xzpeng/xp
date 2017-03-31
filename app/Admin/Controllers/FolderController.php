@@ -114,9 +114,8 @@ class FolderController extends Controller
                 $socket_response = $socketClient->send();
                 $socketClient->close();
 
-                $response = simplexml_load_string($socket_response);
-                if( strtolower($response->result)=='success' ) {
-                    $folders = $response->message->item;
+                if( strtolower($socket_response->result)=='success' ) {
+                    $folders = $socket_response->message->item;
                     foreach ($folders as $folder) {
                         if ($folder->file_type==2) {
                             $rows[][] = '<a href="/admin/search-folders/' . $pid . '?parent_folder=' . $folder->file_name . '">' . $folder->file_name . '</a>';
