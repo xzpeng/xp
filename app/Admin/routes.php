@@ -17,7 +17,9 @@ Route::group([
     $router->resource('securitysoft-packages', SecuritysoftController::class);
     $router->resource('kexin-packages', KexinPackageController::class);
     $router->resource('whitelists', WhitelistController::class);
-    $router->resource('folders', 'FolderController@index');
+    $router->get('folders', 'FolderController@index');
+    $router->get('view-folder/{pid}', 'FolderController@show');
+    $router->get('search-folders/{pid}', 'FolderController@search');
 
 
     $router->resource('install-securitysoft', PlatformSecuritysoftController::class);
