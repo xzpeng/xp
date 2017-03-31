@@ -65,6 +65,7 @@ class FolderController extends Controller
                 $socketClient->close();
 
                 $response = simplexml_load_string($socket_response);
+                var_dump($response);die;
                 if( strtolower($response->result)=='success' ) {
                     $folders = $response->message->item;
                     foreach ($folders as $folder) {
