@@ -48,6 +48,7 @@ class PlatformController extends Controller
 
             if($platform_system_info = json_decode($platform->platform_system_info, true)) {
                 $boottime = $platform_system_info['boottime'];
+                $networks = $platform_system_info['network'];
                 $cpu_stat = isset($platform_system_info['cpu'])?$platform_system_info['cpu']:0;
                 $memory_stat = ( isset($platform_system_info['memory'])&&isset($platform_system_info['memory']['available'])&&isset($platform_system_info['memory']['total']) )?round(($platform_system_info['memory']['available']*100/$platform_system_info['memory']['total']), 1):0;
 
@@ -155,7 +156,16 @@ HTML;
             $process_box = new Box('进程信息', '进程信息');
             $tab->add('进程信息', $process_box, 'process');
 
-            $network_box = new Box('网络信息', '网络信息');
+            $network_html = '';
+            foreach ($networks as $eth => $info) {
+                $network_html .= '<div class="container" style="border:1px #818181 solid;"><div class="col-xs-4">' . $eth . '</div><div class="col-xs-8">';
+                foreach ($info as $arg => $value) {
+                    $network_html .= $arg . ':' . $value . '<br>';
+                }
+                $network_html .= '</div></div>';
+            }
+            
+            $network_box = new Box('网络信息', $network_html);
             $tab->add('网络信息', $network_box, 'network');
             
             $content->row($tab);
