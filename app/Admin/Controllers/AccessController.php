@@ -298,6 +298,8 @@ class AccessController extends Controller
                         $accessObj->sub_hash = $sub_hash;
                         $accessObj->folder_name = $access;
                         $accessObj->folder_hash = $access_hash;
+                        $accessObj->active_starttime = $active_starttime;
+                        $accessObj->active_endtime = $active_endtime;
                         $accessObj->folder_op = 'read';
 
                         $accessObj->save();
