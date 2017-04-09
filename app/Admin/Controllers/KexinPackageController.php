@@ -45,7 +45,7 @@ class KexinPackageController extends Controller
                             'module' => 'remotefile_manage',
                             'func' => 'packageanalysis',
                             'info' => array(
-                                'file_id' => $id,
+                                'package_id' => $id,
                                 'file_name' => config('filesystems.disks.admin.root') . '/' . $package->package_dir
                             )
                         );

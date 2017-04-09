@@ -169,6 +169,7 @@ class PlatformKexinPackageController extends Controller
                         'module' => 'remotefile_manage',
                         'func' => 'packagetransfer',
                         'info' => array(
+                            'package_id' => $package_id,
                             'src_file_name' => config('filesystems.disks.admin.root') . '/' . $package->package_dir,
                             'dst_platform_ip' => $platform->platform_ip,
                             'dst_file_dir' => $dst_file_dir
