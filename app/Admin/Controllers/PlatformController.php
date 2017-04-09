@@ -139,18 +139,27 @@ HTML;
             $info_box = new Box('主机信息', $info_html);
             $tab->add('主机信息', $info_box, 'base_info');
 
-/*
+            // 获取进程信息
             $xml_data = array(
                             'module' => 'system_info',
-                            'func' => 'process',
-                            'info' => array(
-                                'dst_platform_ip' => $platform->platform_ip
-                            )
+                            'func' => 'get_process',
+                            'info' => array()
                         );
-
-            $socketClient = new \App\SocketClient(config('app.socket_local_host'), config('app.socket_local_port'), $xml_data);
+/*
+            $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
             $socket_response = $socketClient->send();
             $socketClient->close();
+
+            if( strtolower($socket_response->result)=='success' ) {
+                $folders = $socket_response->message->item;
+                foreach ($folders as $folder) {
+                    if ($folder->file_type==2) {
+                        $rows[][] = '<a href="/admin/search-folders/' . $pid . '?parent_folder=' . $folder->file_name . '">' . $folder->file_name . '</a>';
+                    } else {
+                        $rows[][] = $folder->file_name;
+                    }
+                }
+            }
 */
             $process_info = '';
             $process_box = new Box('进程信息', '进程信息');

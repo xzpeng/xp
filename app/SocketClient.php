@@ -107,7 +107,13 @@ XML;
 		$info = $xml->addChild('info');
 		
 		foreach($xml_data['info'] as $key => $val){
-			$info->addChild($key, $val);
+			if (is_array($val)) {
+				foreach ($val as $subkey => $subval) {
+					$info->addChild($key, $subval);
+				}
+			} else {
+				$info->addChild($key, $val);
+			}
 		}
 
 		return $xml->asXML();
@@ -124,8 +130,8 @@ XML;
 
 
 
-	public function test($s)
+	public function test()
 	{
-		return 'Answer: ' . $s;
+		var_dump($this->cmdxml);
 	}
 }
