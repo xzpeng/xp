@@ -119,13 +119,13 @@ class FolderController extends Controller
                 }
             }
             $table = new Table($headers, $rows);
-            $table2form = '<form method="POST" action="/admin/post-add-whitelist">' . $table->render() . '<input type="hidden" name="platform_id" value="' . $pid . '" /><input type="hidden" name="_token" value="' . csrf_token() . '" /><hr><div class="btn-group pull-right"><button type="submit" class="btn btn-info pull-right">提交</button></div></form>';
 
-            $content->row( function(Row $row) use($table2form) {
-                $row->column(2,'');
-                $row->column(8, (new Box('目录保护列表', $table2form))->style('info')->solid());
-                $row->column(2,'');
-            } );
+            $form = new Form();
+            $form->action('/admin/post-add-folder');
+            $form->method('post');
+            $form->hidden('platform_id')->default($pid);
+            $form->html($table->render());
+            $content->row(new Box('目录保护列表', $form));
         });
 
     }
@@ -155,7 +155,7 @@ class FolderController extends Controller
 
             if( strtolower($socket_response->result)=='success' ) {
                 $folderObj->delete();
-                return redirec('/admin/view-folder/' . $pid);
+                return redirect('/admin/view-folder/' . $pid);
             }
 
             return back();
@@ -207,12 +207,15 @@ class FolderController extends Controller
                 }
             }
             $table = new Table($headers, $rows);
-            $table2form = '<form method="POST" action="/admin/post-add-whitelist">' . $table->render() . '<input type="hidden" name="platform_id" value="' . $pid . '" /><input type="hidden" name="_token" value="' . csrf_token() . '" /><hr><div class="btn-group pull-right"><button type="submit" class="btn btn-info pull-right">提交</button></div></form>';
-            $content->row( function(Row $row) use($table2form) {
-                $row->column(2,'');
-                $row->column(8, (new Box('目录保护列表', $table2form))->style('info')->solid());
-                $row->column(2,'');
-            } );
+            
+            $table = new Table($headers, $rows);
+
+            $form = new Form();
+            $form->action('/admin/post-add-folder');
+            $form->method('post');
+            $form->hidden('platform_id')->default($pid);
+            $form->html($table->render());
+            $content->row(new Box('目录保护列表', $form));
         });
     }
 

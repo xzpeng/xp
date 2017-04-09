@@ -77,7 +77,6 @@ class AccessController extends Controller
             $content->header('访问控制');
             $content->description('当前目录：/');
 
-
             $form = new Form();
             $form->action('/admin/search-accesses/' . $pid);
             $form->method('get');
@@ -103,10 +102,10 @@ class AccessController extends Controller
                 $socket_response = $socketClient->send();
                 $socketClient->close();
                 
-                
-                /*$xml = '<?xml version="1.0" encoding="UTF-8"?><Response><result>Success</result><message><item><file_name>/tmp/.keystone_install_lock</file_name><file_type>1</file_type></item><item><file_name>/tmp/aprfIczf9</file_name><file_type>1</file_type></item><item><file_name>/tmp/com.apple.launchd.1glvZv3cOU</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.8XEBJ773jd</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.JReff3ZINe</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.r0BfkWU9j4</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.Wgym89EbHN</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.yC2qRjsFOh</file_name><file_type>2</file_type></item><item><file_name>/tmp/cvcd</file_name><file_type>2</file_type></item><item><file_name>/tmp/KSOutOfProcessFetcher.CifFMeoplW</file_name><file_type>2</file_type></item></message></Response>';
-                $socket_response = new \SimpleXMLElement($xml);*/
-
+            /*    
+                $xml = '<?xml version="1.0" encoding="UTF-8"?><Response><result>Success</result><message><item><file_name>/tmp/.keystone_install_lock</file_name><file_type>1</file_type></item><item><file_name>/tmp/aprfIczf9</file_name><file_type>1</file_type></item><item><file_name>/tmp/com.apple.launchd.1glvZv3cOU</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.8XEBJ773jd</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.JReff3ZINe</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.r0BfkWU9j4</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.Wgym89EbHN</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.yC2qRjsFOh</file_name><file_type>2</file_type></item><item><file_name>/tmp/cvcd</file_name><file_type>2</file_type></item><item><file_name>/tmp/KSOutOfProcessFetcher.CifFMeoplW</file_name><file_type>2</file_type></item></message></Response>';
+                $socket_response = new \SimpleXMLElement($xml);
+*/
                 if( strtolower($socket_response->result)=='success' ) {
                     $accesses = $socket_response->message->item;
                     foreach ($accesses as $access) {
@@ -121,40 +120,14 @@ class AccessController extends Controller
 
             $table = new Table($headers, $rows);
 
-            $html_subs = '<div class="checkbox">
-                            <label><b>选择主体：</b></label>
-                            <label>
-                                <input type="checkbox" name="subs[]" value="/usr/bin/vim" checked="checked"> Vim
-                            </label>
-                            <label>
-                                <input type="checkbox" name="subs[]" value="/bin/nano" checked="checked"> Nano
-                            </label>
-                        </div>';
-            $html_time = '<div class="checkbox">
-            <label><b>起止时间：</b></label>
-        <div class="row" style="width: 390px">
-            <div class="col-lg-6">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" name="active_starttime" value="" class="form-control active_starttime" style="width: 160px">
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" name="active_endtime" value="" class="form-control active_endtime" style="width: 160px">
-                </div>
-            </div>
-        </div>
-    </div>';
-
-            $table2form = '<form method="POST" action="/admin/post-add-whitelist">' . $html_subs . $html_time . '<hr>' . $table->render() . '<input type="hidden" name="platform_id" value="' . $pid . '" /><input type="hidden" name="_token" value="' . csrf_token() . '" /><hr><div class="btn-group pull-right"><button type="submit" class="btn btn-info pull-right">提交</button></div></form>';
-
-            $content->row( function(Row $row) use($table2form) {
-                $row->column(2,'');
-                $row->column(8, (new Box('访问控制列表', $table2form))->style('info')->solid());
-                $row->column(2,'');
-            } );
+            $form = new Form();
+            $form->action('/admin/post-add-access');
+            $form->method('post');
+            $form->hidden('platform_id')->default($pid);
+            $form->checkbox('subs', '主体')->options(['/usr/bin/vim'=>'Vim','/bin/nano'=>'Nano']);
+            $form->dateTimeRange('active_starttime', 'active_endtime', '生效时间');
+            $form->html($table->render());
+            $content->row(new Box('添加访问控制', $form));
         });
 
     }
@@ -188,7 +161,7 @@ class AccessController extends Controller
 
             if( strtolower($socket_response->result)=='success' ) {
                 $accessObj->delete();
-                return redirec('/admin/view-access/' . $pid);
+                return redirect('/admin/view-access/' . $pid);
             }
 
             return back();
@@ -242,49 +215,14 @@ class AccessController extends Controller
 
             $table = new Table($headers, $rows);
 
-            $html_subs = '<div class="checkbox">
-                            <label><b>选择主体：</b></label>
-                            <label>
-                                <input type="checkbox" name="subs[]" value="/usr/bin/vim" checked="checked"> Vim
-                            </label>
-                            <label>
-                                <input type="checkbox" name="subs[]" value="/bin/nano" checked="checked"> Nano
-                            </label>
-                        </div>';
-            $html_subs = '<div class="checkbox">
-                            <label><b>选择主体：</b></label>
-                            <label>
-                                <input type="checkbox" name="subs[]" value="/usr/bin/vim" checked="checked"> Vim
-                            </label>
-                            <label>
-                                <input type="checkbox" name="subs[]" value="/bin/nano" checked="checked"> Nano
-                            </label>
-                        </div>';
-            $html_time = '<div class="checkbox">
-            <label><b>起止时间：</b></label>
-        <div class="row" style="width: 390px">
-            <div class="col-lg-6">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" name="active_starttime" value="" class="form-control active_starttime" style="width: 160px">
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" name="active_endtime" value="" class="form-control active_endtime" style="width: 160px">
-                </div>
-            </div>
-        </div>
-    </div>';
-
-            $table2form = '<form method="POST" action="/admin/post-add-whitelist">' . $html_subs . $html_time . '<hr>' . $table->render() . '<input type="hidden" name="platform_id" value="' . $pid . '" /><input type="hidden" name="_token" value="' . csrf_token() . '" /><hr><div class="btn-group pull-right"><button type="submit" class="btn btn-info pull-right">提交</button></div></form>';
-
-            $content->row( function(Row $row) use($table2form) {
-                $row->column(2,'');
-                $row->column(8, (new Box('访问控制列表', $table2form))->style('info')->solid());
-                $row->column(2,'');
-            } );
+            $form = new Form();
+            $form->action('/admin/post-add-access');
+            $form->method('post');
+            $form->hidden('platform_id')->default($pid);
+            $form->checkbox('subs', '主体')->options(['/usr/bin/vim'=>'Vim','/bin/nano'=>'Nano']);
+            $form->dateTimeRange('active_starttime', 'active_endtime', '生效时间');
+            $form->html($table->render());
+            $content->row(new Box('添加访问控制', $form));
         });
     }
 
@@ -301,6 +239,9 @@ class AccessController extends Controller
             $platform = Platform::find($platform_id);
 
             foreach($subs as $sub) {
+                if ($sub == '') {
+                    continue;
+                }
                 $sub_hash = hash('md5', $sub);
                 foreach ($accesses as $access) {
 

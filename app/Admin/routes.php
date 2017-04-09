@@ -24,7 +24,7 @@ Route::group([
     $router->get('folder-whitelist-add/{pid}', 'FolderController@folderWhitelistAdd');
     $router->get('folder-whitelist-del/{pid}/{id}', 'FolderController@folderWhitelistDel');
     $router->get('search-folders/{pid}', 'FolderController@search');
-    $router->post('post-add-whitelist', 'FolderController@postAddWhitelist');
+    $router->post('post-add-folder', 'FolderController@postAddWhitelist');
     $router->get('folder-platform-list', 'FolderController@folderPlatformList');
 
     // 访问控制
@@ -33,7 +33,7 @@ Route::group([
     $router->get('access-whitelist-add/{pid}', 'AccessController@accessWhitelistAdd');
     $router->get('access-whitelist-del/{pid}/{id}', 'AccessController@accessWhitelistDel');
     $router->get('search-accesses/{pid}', 'AccessController@search');
-    $router->post('post-add-whitelist', 'AccessController@postAddWhitelist');
+    $router->post('post-add-access', 'AccessController@postAddWhitelist');
     $router->get('access-platform-list', 'AccessController@accessPlatformList');
 
 
