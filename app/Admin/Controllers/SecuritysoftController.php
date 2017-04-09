@@ -43,7 +43,7 @@ class SecuritysoftController extends Controller
         return Admin::content(function (Content $content) use ($id) {
 
             $content->header('编辑安装包');
-            $content->description('description');
+            $content->description('修改');
 
             $content->body($this->form()->edit($id));
         });
@@ -59,7 +59,7 @@ class SecuritysoftController extends Controller
         return Admin::content(function (Content $content) {
 
             $content->header('添加安装包');
-            // $content->description('description');
+            $content->description('新建');
 
             $content->body($this->form());
         });

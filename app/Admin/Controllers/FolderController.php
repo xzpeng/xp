@@ -27,7 +27,7 @@ class FolderController extends Controller
     public function index() {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
+            $content->header('目录保护');
             
             $html_add_button = '<div class="pull-right">
             <div class="btn-group pull-right" style="margin-right: 10px">
@@ -45,8 +45,8 @@ class FolderController extends Controller
     public function folderPlatformList() {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('目录保护');
+            $content->description('主机列表');
 
             $content->body($this->grid());
         });
@@ -55,7 +55,9 @@ class FolderController extends Controller
 
     public function show($pid) {
         return Admin::content(function(Content $content) use($pid) {
-            $content->header('header');
+            $platform = Platform::find($pid);
+            $content->header('目录保护');
+            $content->description('主机: ' . $platform->platform_name);
 
             $html_add_button = '<div class="pull-right">
             <div class="btn-group pull-right" style="margin-right: 10px">
@@ -73,7 +75,7 @@ class FolderController extends Controller
     public function folderWhitelistAdd($pid) {
     	return Admin::content(function (Content $content) use($pid) {
             $content->header('目录保护');
-            $content->description('/');
+            $content->description('当前目录：/');
 
 
             $form = new Form();
@@ -133,7 +135,7 @@ class FolderController extends Controller
         $parent_folder = $request->input('parent_folder', '/');
         return Admin::content(function (Content $content) use($pid,$parent_folder) {
             $content->header('目录保护');
-            $content->description($parent_folder);
+            $content->description('当前目录：' . $parent_folder);
 
 
             $form = new Form();

@@ -28,8 +28,7 @@ class PlatformController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('设备状态监控');
 
             $content->body($this->grid());
         });
@@ -42,7 +41,7 @@ class PlatformController extends Controller
             $platform = Platform::find($id);
 
             $content->header('设备状态监控');
-            // $content->description('主机信息查看、管理……');
+            $content->description('主机信息');
 
             $tab = new Tab();
 
@@ -192,8 +191,8 @@ HTML;
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('设备状态监控');
+            $content->description('修改');
 
             $content->body($this->form()->edit($id));
         });
@@ -208,8 +207,8 @@ HTML;
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('设备状态监控');
+            $content->description('新建');
 
             $content->body($this->form());
         });

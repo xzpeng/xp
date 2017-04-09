@@ -27,7 +27,7 @@ class AccessController extends Controller
     public function index() {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
+            $content->header('访问控制');
             
             $html_add_button = '<div class="pull-right">
             <div class="btn-group pull-right" style="margin-right: 10px">
@@ -45,8 +45,8 @@ class AccessController extends Controller
     public function accessPlatformList() {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('访问控制');
+            $content->description('主机列表');
 
             $content->body($this->grid());
         });
@@ -55,7 +55,9 @@ class AccessController extends Controller
 
     public function show($pid) {
         return Admin::content(function(Content $content) use($pid) {
-            $content->header('header');
+            $platform = Platform::find($pid);
+            $content->header('访问控制');
+            $content->description('主机: ' . $platform->platform_name);
 
             $html_add_button = '<div class="pull-right">
             <div class="btn-group pull-right" style="margin-right: 10px">
@@ -73,13 +75,13 @@ class AccessController extends Controller
     public function accessWhitelistAdd($pid) {
         return Admin::content(function (Content $content) use($pid) {
             $content->header('访问控制');
-            $content->description('/');
+            $content->description('当前目录：/');
 
 
             $form = new Form();
             $form->action('/admin/search-accesses/' . $pid);
             $form->method('get');
-            $form->text('parent_access','')->default('/');
+            $form->text('parent_folder','')->default('/');
             $content->row( (new Box('查询目录', $form))->style('info')->solid() );
 
             $platform = Platform::find($pid);
@@ -109,7 +111,7 @@ class AccessController extends Controller
                     $accesses = $socket_response->message->item;
                     foreach ($accesses as $access) {
                         if ($access->file_type==2) {
-                            $rows[] = ['<input type="checkbox" name="accesses[]" value="' . base64_encode($access->file_name) . '"/>', '<a href="/admin/search-accesses/' . $pid . '?parent_access=' . $access->file_name . '">' . $access->file_name . '</a>'];
+                            $rows[] = ['<input type="checkbox" name="accesses[]" value="' . base64_encode($access->file_name) . '"/>', '<a href="/admin/search-accesses/' . $pid . '?parent_folder=' . $access->file_name . '">' . $access->file_name . '</a>'];
                         } else {
                             $rows[] = ['<input type="checkbox" name="accesses[]" value="' . base64_encode($access->file_name) . '"/>', $access->file_name];
                         }
@@ -159,16 +161,16 @@ class AccessController extends Controller
 
 
     public function search($pid, Request $request) {
-        $parent_access = $request->input('parent_access', '/');
-        return Admin::content(function (Content $content) use($pid,$parent_access) {
+        $parent_folder = $request->input('parent_folder', '/');
+        return Admin::content(function (Content $content) use($pid,$parent_folder) {
             $content->header('访问控制');
-            $content->description($parent_access);
+            $content->description('当前目录：' . $parent_folder);
 
 
             $form = new Form();
             $form->action('/admin/search-accesses/' . $pid);
             $form->method('get');
-            $form->text('parent_access','')->default($parent_access);
+            $form->text('parent_folder','')->default($parent_folder);
             $content->row( (new Box('查询目录', $form))->style('info')->solid() );
 
             $platform = Platform::find($pid);
@@ -182,7 +184,7 @@ class AccessController extends Controller
                             'module' => 'system_info',
                             'func' => 'query_dir',
                             'info' => array(
-                                'query_path' => $parent_access
+                                'query_path' => $parent_folder
                             )
                         );
 
@@ -194,7 +196,7 @@ class AccessController extends Controller
                     $accesses = $socket_response->message->item;
                     foreach ($accesses as $access) {
                         if ($access->file_type==2) {
-                            $rows[] = ['<input type="checkbox" name="accesses[]" value="' . base64_encode($access->file_name) . '"/>', '<a href="/admin/search-accesses/' . $pid . '?parent_access=' . $access->file_name . '">' . $access->file_name . '</a>'];
+                            $rows[] = ['<input type="checkbox" name="accesses[]" value="' . base64_encode($access->file_name) . '"/>', '<a href="/admin/search-accesses/' . $pid . '?parent_folder=' . $access->file_name . '">' . $access->file_name . '</a>'];
                         } else {
                             $rows[] = ['<input type="checkbox" name="accesses[]" value="' . base64_encode($access->file_name) . '"/>', $access->file_name];
                         }
