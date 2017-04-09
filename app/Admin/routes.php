@@ -22,7 +22,7 @@ Route::group([
     $router->get('folders', 'FolderController@index');
     $router->get('view-folder/{pid}', 'FolderController@show');
     $router->get('folder-whitelist-add/{pid}', 'FolderController@folderWhitelistAdd');
-    $router->get('folder-whitelist-del/{id}', 'FolderController@folderWhitelistDel');
+    $router->get('folder-whitelist-del/{pid}/{id}', 'FolderController@folderWhitelistDel');
     $router->get('search-folders/{pid}', 'FolderController@search');
     $router->post('post-add-whitelist', 'FolderController@postAddWhitelist');
     $router->get('folder-platform-list', 'FolderController@folderPlatformList');
@@ -31,6 +31,7 @@ Route::group([
     $router->get('accesses', 'AccessController@index');
     $router->get('view-access/{pid}', 'AccessController@show');
     $router->get('access-whitelist-add/{pid}', 'AccessController@accessWhitelistAdd');
+    $router->get('access-whitelist-del/{pid}/{id}', 'AccessController@accessWhitelistDel');
     $router->get('search-accesses/{pid}', 'AccessController@search');
     $router->post('post-add-whitelist', 'AccessController@postAddWhitelist');
     $router->get('access-platform-list', 'AccessController@accessPlatformList');

@@ -160,6 +160,42 @@ class AccessController extends Controller
     }
 
 
+    public function accessWhitelistDel($pid, $id) {
+        $accessObj = Access::find($id);
+        
+        if($accessObj) {
+            $platform = Platform::find($accessObj->platform_id);
+
+            $xml_data = array(
+                            'module' => 'file_manage',
+                            'func' => 'del_dac',
+                            'info' => array(
+                                'sub_name' => $accessObj->sub_name,
+                                'sub_hash' => $accessObj->sub_hash,
+                                'file_name' => $accessObj->folder_name,
+                                'file_hash' => $accessObj->folder_hash,
+                                'file_opt' => $accessObj->folder_op,
+                                'group_name' => $accessObj->group_name,
+                                'active_starttime' => $accessObj->active_starttime,
+                                'active_endtime' => $accessObj->active_endtime,
+                            )
+                        );
+
+            $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
+            
+            $socket_response = $socketClient->send();
+            $socketClient->close();
+
+            if( strtolower($socket_response->result)=='success' ) {
+                $accessObj->delete();
+                return redirec('/admin/view-access/' . $pid);
+            }
+
+            return back();
+        }
+    }
+
+
     public function search($pid, Request $request) {
         $parent_folder = $request->input('parent_folder', '/');
         return Admin::content(function (Content $content) use($pid,$parent_folder) {
@@ -388,7 +424,8 @@ class AccessController extends Controller
                 $id = $actions->getKey();
                 $actions->disableEdit();
                 $actions->disableDelete();
-                $actions->append('<a href="view-access/' . $id . '">查看</a>');
+                $actions->append('<a href="/admin/access-forward/' . $id . '">转发</a>');
+                $actions->append('<a href="/admin/access-whitelist-del/' . $platform_id . '/' . $id . '">&nbsp;&nbsp;删除</a>');
             });
 
             $grid->tools(function ($tools) {
