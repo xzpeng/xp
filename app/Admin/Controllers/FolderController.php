@@ -89,7 +89,6 @@ class FolderController extends Controller
 
             if ($platform) {
                 
-
             	$xml_data = array(
                             'module' => 'system_info',
                             'func' => 'query_dir',
@@ -166,15 +165,20 @@ class FolderController extends Controller
                     $folders = $socket_response->message->item;
                     foreach ($folders as $folder) {
                         if ($folder->file_type==2) {
-                            $rows[][] = '<a href="/admin/search-folders/' . $pid . '?parent_folder=' . $folder->file_name . '">' . $folder->file_name . '</a>';
+                            $rows[] = ['<input type="checkbox" name="folders[]" value="' . base64_encode($folder->file_name) . '"/>', '<a href="/admin/search-folders/' . $pid . '?parent_folder=' . $folder->file_name . '">' . $folder->file_name . '</a>'];
                         } else {
-                            $rows[][] = $folder->file_name;
+                            $rows[] = ['<input type="checkbox" name="folders[]" value="' . base64_encode($folder->file_name) . '"/>', $folder->file_name];
                         }
                     }
                 }
             }
-
-            $content->row( (new Box('目录保护列表', new Table($headers, $rows)))->style('info')->solid() );
+            $table = new Table($headers, $rows);
+            $table2form = '<form method="POST" action="/admin/post-add-whitelist">' . $table->render() . '<input type="hidden" name="platform_id" value="' . $pid . '" /><input type="hidden" name="_token" value="' . csrf_token() . '" /><hr><div class="btn-group pull-right"><button type="submit" class="btn btn-info pull-right">提交</button></div></form>';
+            $content->row( function(Row $row) use($table2form) {
+                $row->column(2,'');
+                $row->column(8, (new Box('目录保护列表', $table2form))->style('info')->solid());
+                $row->column(2,'');
+            } );
         });
     }
 
@@ -220,9 +224,9 @@ class FolderController extends Controller
                     $folderObj->save();
                 }
             }
-            return redirect('/admin/folder-whitelist-add/' . $platform_id);
+            return redirect('/admin/view-folder/' . $platform_id);
         } else {
-            return redirect('/admin/folder-whitelist-add');
+            return redirect('/admin/view-folder/' . $platform_id);
         }
     }
 
