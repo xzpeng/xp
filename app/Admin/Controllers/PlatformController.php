@@ -141,7 +141,7 @@ HTML;
             // 获取进程信息
             $xml_data = array(
                             'module' => 'system_info',
-                            'func' => 'get_process',
+                            'func' => 'query_process',
                             'info' => array()
                         );
 

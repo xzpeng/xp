@@ -27,8 +27,7 @@ class KexinPackageController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('可信程序');
 
             $content->body($this->grid());
         });
@@ -82,8 +81,8 @@ class KexinPackageController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('可信程序');
+            $content->description('修改');
 
             $content->body($this->form()->edit($id));
         });

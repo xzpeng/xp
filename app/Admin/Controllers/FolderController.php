@@ -278,8 +278,6 @@ class FolderController extends Controller
 
             $grid->platform_name('主机名');
             $grid->platform_ip('IP地址');
-            $grid->platform_sn('序列号');
-
 
             $grid->actions(function ($actions) {
                 $id = $actions->getKey();
