@@ -175,7 +175,7 @@ HTML;
                     $table_rows[$key] = [$process->pid, $process->exe, $process->status, $process->user, $process->create_time];
                 }
                 $process_info = '';
-                $process_box = new Box('进程信息', new Table($table_headers, $table_rows));
+                $process_box = new Table($table_headers, $table_rows);
                 $tab->add('进程信息', $process_box, 'process');
             }
 */

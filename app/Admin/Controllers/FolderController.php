@@ -193,7 +193,7 @@ class FolderController extends Controller
                 $folder = base64_decode($folder);
                 $folder_hash = hash('md5', $folder);
                 $xml_data = array(
-                                'module' => 'file _manage',
+                                'module' => 'file_manage',
                                 'func' => 'add_mac_obj',
                                 'info' => array(
                                     'file_name' => $folder,
