@@ -17,12 +17,22 @@ Route::group([
     $router->resource('securitysoft-packages', SecuritysoftController::class);
     $router->resource('kexin-packages', KexinPackageController::class);
     $router->resource('whitelists', WhitelistController::class);
+
+    // 目录保护
     $router->get('folders', 'FolderController@index');
     $router->get('view-folder/{pid}', 'FolderController@show');
     $router->get('folder-whitelist-add/{pid}', 'FolderController@folderWhitelistAdd');
     $router->get('search-folders/{pid}', 'FolderController@search');
     $router->post('post-add-whitelist', 'FolderController@postAddWhitelist');
     $router->get('folder-platform-list', 'FolderController@folderPlatformList');
+
+    // 访问控制
+    $router->get('accesses', 'AccessController@index');
+    $router->get('view-access/{pid}', 'AccessController@show');
+    $router->get('access-whitelist-add/{pid}', 'AccessController@accessWhitelistAdd');
+    $router->get('search-accesses/{pid}', 'AccessController@search');
+    $router->post('post-add-whitelist', 'AccessController@postAddWhitelist');
+    $router->get('access-platform-list', 'AccessController@accessPlatformList');
 
 
     $router->resource('install-securitysoft', PlatformSecuritysoftController::class);
