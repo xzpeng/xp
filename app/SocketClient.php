@@ -77,8 +77,7 @@ class SocketClient
 		if($header_recv) {
 			while($response = socket_read($this->socket, $header_recv))
 			{
-				dd($response);
-				// return new \SimpleXMLElement($response);
+				return new \SimpleXMLElement($response);
 			}
 		} else {
 			dd($header_recv);
