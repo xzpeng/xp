@@ -420,7 +420,7 @@ class AccessController extends Controller
             $grid->active_endtime('结束时间');
 
 
-            $grid->actions(function ($actions) {
+            $grid->actions(function ($actions) use($platform_id) {
                 $id = $actions->getKey();
                 $actions->disableEdit();
                 $actions->disableDelete();
