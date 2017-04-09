@@ -22,6 +22,7 @@ Route::group([
     $router->get('folders', 'FolderController@index');
     $router->get('view-folder/{pid}', 'FolderController@show');
     $router->get('folder-whitelist-add/{pid}', 'FolderController@folderWhitelistAdd');
+    $router->get('folder-whitelist-del/{id}', 'FolderController@folderWhitelistDel');
     $router->get('search-folders/{pid}', 'FolderController@search');
     $router->post('post-add-whitelist', 'FolderController@postAddWhitelist');
     $router->get('folder-platform-list', 'FolderController@folderPlatformList');

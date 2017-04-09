@@ -296,9 +296,9 @@ class AccessController extends Controller
                         $accessObj->platform_id = $platform_id;
                         $accessObj->sub_name = $sub;
                         $accessObj->sub_hash = $sub_hash;
-                        $accessObj->access_name = $access;
-                        $accessObj->access_hash = $access_hash;
-                        $accessObj->access_op = 'read';
+                        $accessObj->folder_name = $access;
+                        $accessObj->folder_hash = $access_hash;
+                        $accessObj->folder_op = 'read';
 
                         $accessObj->save();
                     }
@@ -347,7 +347,7 @@ class AccessController extends Controller
     {
         return Admin::grid(Access::class, function (Grid $grid) {
             $grid->sub_name('主体');
-            $grid->access_name('目录');
+            $grid->folder_name('目录');
             $grid->platform_id('主机');
             $grid->active_starttime('生效时间');
             $grid->active_endtime('结束时间');
@@ -377,7 +377,7 @@ class AccessController extends Controller
         return Admin::grid(Access::class, function (Grid $grid) use($platform_id) {
 
             $grid->sub_name('主体');
-            $grid->access_name('目录');
+            $grid->folder_name('目录');
             $grid->active_starttime('生效时间');
             $grid->active_endtime('结束时间');
 
