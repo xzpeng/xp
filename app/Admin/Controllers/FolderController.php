@@ -107,7 +107,6 @@ class FolderController extends Controller
                 $socket_response = new \SimpleXMLElement($xml);*/
 
                 if( strtolower($socket_response->result)=='success' ) {
-                    $socket_response_array = json_decode(json_encode($socket_response), true);
                     $folders = $socket_response->message->item;
                     foreach ($folders as $folder) {
                         if ($folder->file_type==2) {
