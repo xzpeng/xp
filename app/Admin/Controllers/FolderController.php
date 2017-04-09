@@ -294,9 +294,9 @@ class FolderController extends Controller
     {
         return Admin::grid(Folder::class, function (Grid $grid) use($platform_id) {
 
-            $grid->folder_name('文件(夹)名');
-            $grid->folder_type('类型');
-            $grid->folder_op('权限');
+            $grid->folder_name('目录');
+            $grid->platform_id('主机');
+            $grid->created_at('下发时间');
 
 
             $grid->actions(function ($actions) {

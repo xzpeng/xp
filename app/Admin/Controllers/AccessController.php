@@ -72,7 +72,7 @@ class AccessController extends Controller
 
     public function accessWhitelistAdd($pid) {
         return Admin::content(function (Content $content) use($pid) {
-            $content->header('目录保护');
+            $content->header('访问控制');
             $content->description('/');
 
 
@@ -150,7 +150,7 @@ class AccessController extends Controller
 
             $content->row( function(Row $row) use($table2form) {
                 $row->column(2,'');
-                $row->column(8, (new Box('目录保护列表', $table2form))->style('info')->solid());
+                $row->column(8, (new Box('访问控制列表', $table2form))->style('info')->solid());
                 $row->column(2,'');
             } );
         });
@@ -161,7 +161,7 @@ class AccessController extends Controller
     public function search($pid, Request $request) {
         $parent_access = $request->input('parent_access', '/');
         return Admin::content(function (Content $content) use($pid,$parent_access) {
-            $content->header('目录保护');
+            $content->header('访问控制');
             $content->description($parent_access);
 
 
@@ -244,7 +244,7 @@ class AccessController extends Controller
 
             $content->row( function(Row $row) use($table2form) {
                 $row->column(2,'');
-                $row->column(8, (new Box('目录保护列表', $table2form))->style('info')->solid());
+                $row->column(8, (new Box('访问控制列表', $table2form))->style('info')->solid());
                 $row->column(2,'');
             } );
         });
@@ -347,7 +347,8 @@ class AccessController extends Controller
             $grid->sub_name('主体');
             $grid->access_name('目录');
             $grid->platform_id('主机');
-            $grid->created_at('下发时间');
+            $grid->active_starttime('生效时间');
+            $grid->active_endtime('结束时间');
 
 
             $grid->actions(function ($actions) {
@@ -375,8 +376,8 @@ class AccessController extends Controller
 
             $grid->sub_name('主体');
             $grid->access_name('目录');
-            $grid->access_type('类型');
-            $grid->access_op('权限');
+            $grid->active_starttime('生效时间');
+            $grid->active_endtime('结束时间');
 
 
             $grid->actions(function ($actions) {
