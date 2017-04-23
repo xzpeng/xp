@@ -59,13 +59,28 @@ class AccessController extends Controller
             $content->header('访问控制');
             $content->description('主机: ' . $platform->platform_name);
 
-            $html_add_button = '<div class="pull-right">
-            <div class="btn-group pull-right" style="margin-right: 10px">
-                <a href="/admin/access-whitelist-add/' . $pid . '" class="btn btn-sm btn-success">
-                    <i class="fa fa-save"></i>&nbsp;&nbsp;新增
-                </a>
-            </div>
-            </div>';
+            if ($platform->alive==1) {
+                $html_add_button = '
+                <div class="pull-left">
+                    <span class="label label-success">主机正常</span>
+                </div>
+                <div class="pull-right">
+                    <div class="btn-group pull-right" style="margin-right: 10px">
+                        <a href="/admin/access-whitelist-add/' . $pid . '" class="btn btn-sm btn-success">
+                            <i class="fa fa-save"></i>&nbsp;&nbsp;新增
+                        </a>
+                    </div>
+                </div>';
+            } else {
+                $html_add_button = '<div class="pull-right">
+                <span class="label label-danger">主机不在线</span>
+                <div class="btn-group pull-right" style="margin-right: 10px">
+                    <a href="#" class="btn btn-sm btn-danger" disabled="disabled">
+                        <i class="fa fa-save"></i>&nbsp;&nbsp;新增
+                    </a>
+                </div>
+                </div>';
+            }
             $content->row( (new Box('操作', $html_add_button))->style('info')->solid() );
             $content->row($this->gridAccesss($pid));
         });
