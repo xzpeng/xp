@@ -59,13 +59,29 @@ class FolderController extends Controller
             $content->header('目录保护');
             $content->description('主机: ' . $platform->platform_name);
 
-            $html_add_button = '<div class="pull-right">
-            <div class="btn-group pull-right" style="margin-right: 10px">
-                <a href="/admin/folder-whitelist-add/' . $pid . '" class="btn btn-sm btn-success">
-                    <i class="fa fa-save"></i>&nbsp;&nbsp;新增
-                </a>
-            </div>
-            </div>';
+            if ($platform->alive==1) {
+                $html_add_button = '
+                <div class="pull-left">
+                    <span class="label label-success">主机正常</span>
+                </div>
+                <div class="pull-right">
+                    <div class="btn-group pull-right" style="margin-right: 10px">
+                        <a href="/admin/folder-whitelist-add/' . $pid . '" class="btn btn-sm btn-success">
+                            <i class="fa fa-save"></i>&nbsp;&nbsp;新增
+                        </a>
+                    </div>
+                </div>';
+            } else {
+                $html_add_button = '<div class="pull-right">
+                <span class="label label-danger">主机不在线</span>
+                <div class="btn-group pull-right" style="margin-right: 10px">
+                    <a href="#" class="btn btn-sm btn-danger" disabled="disabled">
+                        <i class="fa fa-save"></i>&nbsp;&nbsp;新增
+                    </a>
+                </div>
+                </div>';
+            }
+            
             $content->row( (new Box('操作', $html_add_button))->style('info')->solid() );
             $content->row($this->gridFolders($pid));
         });
@@ -76,7 +92,6 @@ class FolderController extends Controller
     	return Admin::content(function (Content $content) use($pid) {
             $content->header('目录保护');
             $content->description('当前目录：/');
-
 
             $form = new Form();
             $form->action('/admin/search-folders/' . $pid);
@@ -302,7 +317,9 @@ class FolderController extends Controller
     {
         return Admin::grid(Folder::class, function (Grid $grid) {
             $grid->folder_name('目录');
-            $grid->platform_id('主机');
+            $grid->column('platform_id', '主机')->display(function($platform_id){
+                return Platform::find($platform_id)->platform_name;
+            });
             $grid->created_at('下发时间');
 
 
@@ -330,7 +347,9 @@ class FolderController extends Controller
         return Admin::grid(Folder::class, function (Grid $grid) use($platform_id) {
 
             $grid->folder_name('目录');
-            $grid->platform_id('主机');
+            $grid->column('platform_id', '主机')->display(function($platform_id){
+                return Platform::find($platform_id)->platform_name;
+            });
             $grid->created_at('下发时间');
 
 

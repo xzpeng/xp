@@ -89,10 +89,14 @@ class SecuritysoftController extends Controller
             
             $grid->actions(function ($actions) {
                 $actions->disableDelete();
+                $actions->disableEdit();
+                $action_btn = '<a class="btn btn-primary btn-xs" href="' . url('/admin/securitysoft-packages/' . $actions->row->id) . '/edit">修改</a>';
+                $actions->append($action_btn);
             });
 
             $grid->tools(function ($tools) {
                 $tools->batch(function ($batch) {
+                    $batch->disableDelete();
                     $batch->disableDelete();
                 });
             });

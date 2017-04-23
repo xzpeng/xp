@@ -325,7 +325,9 @@ class AccessController extends Controller
         return Admin::grid(Access::class, function (Grid $grid) {
             $grid->sub_name('主体');
             $grid->folder_name('目录');
-            $grid->platform_id('主机');
+            $grid->column('platform_id', '主机')->display(function($platform_id){
+                return Platform::find($platform_id)->platform_name;
+            });
             $grid->active_starttime('生效时间');
             $grid->active_endtime('结束时间');
 
@@ -355,6 +357,9 @@ class AccessController extends Controller
 
             $grid->sub_name('主体');
             $grid->folder_name('目录');
+            $grid->column('platform_id', '主机')->display(function($platform_id){
+                return Platform::find($platform_id)->platform_name;
+            });
             $grid->active_starttime('生效时间');
             $grid->active_endtime('结束时间');
 

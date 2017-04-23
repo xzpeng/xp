@@ -48,8 +48,8 @@ class PlatformSecuritysoftController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('安装申请');
+            $content->description('修改');
 
             $content->body($this->form()->edit($id));
         });
@@ -159,6 +159,12 @@ class PlatformSecuritysoftController extends Controller
 
 
             $info_html = file_get_contents($log_file);
+
+            if (strstr($info_html, 'success')) {
+                $platform->install_status = 2;
+                $platform->save();
+            }
+
             $info_html = str_replace("\n", '<br>', $info_html);
 
             $actions_box = new Box('安装日志', $info_html);

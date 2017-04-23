@@ -40,8 +40,8 @@ class PlatformKexinPackageController extends Controller
     {
         return Admin::content(function (Content $content) use($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('可信程序');
+            $content->description('下发记录');
 
             $content->body($this->gridRecords($id));
         });
@@ -57,8 +57,8 @@ class PlatformKexinPackageController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('可信程序');
+            $content->description('修改');
 
             $content->body($this->form()->edit($id));
         });
@@ -73,8 +73,8 @@ class PlatformKexinPackageController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('可信程序');
+            $content->description('下发');
 
             $content->body($this->form());
         });
@@ -149,7 +149,7 @@ class PlatformKexinPackageController extends Controller
     {
         return Admin::content(function (Content $content) use($id) {
 
-            $content->header('header');
+            $content->header('可信程序');
             $content->description('description');
 
             $content->body($this->form($id));
