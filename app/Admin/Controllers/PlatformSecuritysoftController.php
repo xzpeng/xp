@@ -160,16 +160,18 @@ class PlatformSecuritysoftController extends Controller
 
             $info_html = file_get_contents($log_file);
 
-            if (strstr($info_html, 'success')) {
-                $platform->install_status = 2;
-                $platform->save();
-            }
-
             $info_html = str_replace("\n", '<br>', $info_html);
 
             $actions_box = new Box('安装日志', $info_html);
             $content->row($actions_box);
-            Admin::script($this->script());
+
+            if (strstr($info_html, 'success')) {
+                $platform->install_status = 2;
+                $platform->save();
+            } else {
+                Admin::script($this->script());
+            }
+
         });
     }
 
