@@ -118,8 +118,8 @@ class SecuritysoftController extends Controller
         return Admin::form(Securitysoft::class, function (Form $form) {
 
             $form->display('id', 'ID');
-            $form->text('soft_name', '软件名');
             $form->file('soft_dir', '选择软件');
+            $form->text('soft_name', '软件名');
             $form->text('soft_release', '版本');
 
             // $form->display('created_at', '添加时间');
