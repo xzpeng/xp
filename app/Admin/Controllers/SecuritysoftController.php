@@ -62,6 +62,8 @@ class SecuritysoftController extends Controller
             $content->description('新建');
 
             $content->body($this->form());
+
+            Admin::script($this->script());
         });
     }
 
@@ -123,5 +125,17 @@ class SecuritysoftController extends Controller
             // $form->display('created_at', '添加时间');
             // $form->display('updated_at', '更新时间');
         });
+    }
+
+        public function script()
+    {
+        return <<<EOT
+$('input.soft_dir').change(function(){
+var soft_path = $(this).val();
+var soft_paths = soft_path.split("\\\\");
+var soft_name = soft_paths[soft_paths.length-1];
+$('#soft_name').val(soft_name);
+})
+EOT;
     }
 }

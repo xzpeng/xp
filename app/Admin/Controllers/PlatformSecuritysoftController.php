@@ -236,7 +236,8 @@ class PlatformSecuritysoftController extends Controller
             $form->display('id', 'ID');
             $form->text('platform_name', '主机名')->attribute(['required'=>'required']);
             $form->text('platform_ip', 'IP地址')->attribute(['required'=>'required']);
-            $form->text('platform_sn', '序列号')->attribute(['required'=>'required']);
+            // $form->text('platform_sn', '序列号')->attribute(['required'=>'required']);
+            $form->hidden('platform_sn')->default(md5(time()));
             $form->text('platform_root', 'root账号')->default('root')->attribute(['required'=>'required']);
             $form->password('platform_rootpwd', 'root密码')->attribute(['required'=>'required']);
             $form->radio('alive', '状态')->options([1=> 'alive', 0 => 'Dead'])->default('1');
