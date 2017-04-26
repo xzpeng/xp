@@ -55,7 +55,7 @@ class PlatformController extends Controller
                 foreach($platform_system_info['disk'] as $key => $value) {
                     $disk_html .= '<div class="col-sm-8">'.$key.'
                                 <div class="progress">
-                                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: ' . $value['usage'] . '%">' . $value['usage'] . '
+                                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: ' . $value['usage'] . '%">' . $value['usage'] . '%
                                       <span class="sr-only"></span>
                                     </div>
                                 </div>
