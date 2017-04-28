@@ -62,11 +62,11 @@ class PlatformController extends Controller
                             </div>';
                 }
 
-                $system_release = isset($platform_system_info['system_release'])?$platform_system_info['system_release']:'';
+                $sysversion = isset($platform_system_info['sysversion'])?$platform_system_info['sysversion']:'';
             } else {
                 $cpu_stat = 0;
                 $memory_stat = 0;
-                $system_release = '';
+                $sysversion = '';
             }
             $cpu_stat_class = $cpu_stat<50?'progress-bar-success':($cpu_stat>75?'progress-bar-danger':'progress-bar-warning');
             $memory_stat_class = $memory_stat<50?'progress-bar-success':($memory_stat>75?'progress-bar-danger':'progress-bar-warning');
@@ -121,7 +121,7 @@ class PlatformController extends Controller
     </tr>
     <tr>
         <td>系统版本：</td>
-        <td>$system_release</td>
+        <td>$sysversion</td>
     </tr>
     <tr>
         <td>开机时间：</td>
