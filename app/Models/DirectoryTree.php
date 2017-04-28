@@ -11,6 +11,7 @@ class DirectoryTree extends Model
     use ModelTree,AdminBuilder;
 
     protected $table = 'directory_trees';
+    protected $fillable = ['parent_id', 'platform_id', 'order', 'name','name_relative', 'file_type'];
 
     public function __construct(array $attributes = [])
     {

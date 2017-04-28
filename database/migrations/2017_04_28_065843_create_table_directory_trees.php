@@ -18,6 +18,8 @@ class CreateTableDirectoryTrees extends Migration
             $table->integer('platform_id');
             $table->integer('order');
             $table->string('name');
+            $table->string('name_relative');
+            $table->integer('file_type');
             $table->timestamps();
         });
     }

@@ -91,16 +91,10 @@ class FolderController extends Controller
 
 
     public function folderWhitelistAdd($pid) {
+        DirectoryTree::where('platform_id', $pid)->delete();
     	return Admin::content(function (Content $content) use($pid) {
             $content->header('目录保护');
             $content->description('当前目录：/');
-
-            $form = new Form();
-            $form->action('/admin/search-folders/' . $pid);
-    		$form->method('get');
-			$form->text('parent_folder','')->default('/');
-			$content->row( (new Box('查询目录', $form))->style('info')->solid() );
-
             $platform = Platform::find($pid);
 
             $headers = ['', '目录/文件'];
@@ -115,43 +109,52 @@ class FolderController extends Controller
                                 'query_path' => '/'
                             )
                         );
-/*
+
 	            $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
                 $socket_response = $socketClient->send();
-                $socketClient->close();*/
+                $socketClient->close();
                 
-                
-                $xml = '<?xml version="1.0" encoding="UTF-8"?><Response><result>Success</result><message><item><file_name>/tmp/.keystone_install_lock</file_name><file_type>1</file_type></item><item><file_name>/tmp/aprfIczf9</file_name><file_type>1</file_type></item><item><file_name>/tmp/com.apple.launchd.1glvZv3cOU</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.8XEBJ773jd</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.JReff3ZINe</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.r0BfkWU9j4</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.Wgym89EbHN</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.yC2qRjsFOh</file_name><file_type>2</file_type></item><item><file_name>/tmp/cvcd</file_name><file_type>2</file_type></item><item><file_name>/tmp/KSOutOfProcessFetcher.CifFMeoplW</file_name><file_type>2</file_type></item></message></Response>';
+/*                
+                $xml = '<?xml version="1.0" encoding="UTF-8"?><Response><result>Success</result><message><item><file_name>/tmp/.keystone_install_lock</file_name><file_name_relative>.keystone_install_lock</file_name_relative><file_type>1</file_type></item><item><file_name>/tmp/aprfIczf9</file_name><file_name_relative>aprfIczf9</file_name_relative><file_type>1</file_type></item><item><file_name>/tmp/com.apple.launchd.1glvZv3cOU</file_name><file_name_relative>com.apple.launchd.1glvZv3cOU</file_name_relative><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.8XEBJ773jd</file_name><file_name_relative>com.apple.launchd.8XEBJ773jd</file_name_relative><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.JReff3ZINe</file_name><file_name_relative>com.apple.launchd.JReff3ZINe</file_name_relative><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.r0BfkWU9j4</file_name><file_name_relative>com.apple.launchd.r0BfkWU9j4</file_name_relative><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.Wgym89EbHN</file_name><file_name_relative>com.apple.launchd.Wgym89EbHN</file_name_relative><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.yC2qRjsFOh</file_name><file_name_relative>com.apple.launchd.yC2qRjsFOh</file_name_relative><file_type>2</file_type></item><item><file_name>/tmp/cvcd</file_name><file_name_relative>cvcd</file_name_relative><file_type>2</file_type></item><item><file_name>/tmp/KSOutOfProcessFetcher.CifFMeoplW</file_name><file_name_relative>KSOutOfProcessFetcher.CifFMeoplW</file_name_relative><file_type>2</file_type></item></message></Response>';
+*/
                 $socket_response = new \SimpleXMLElement($xml);
 
                 if( strtolower($socket_response->result)=='success' ) {
                     $folders = $socket_response->message->item;
                     foreach ($folders as $folder) {
-                        if ($folder->file_type==2) {
-                            $rows[] = ['<input type="checkbox" name="folders[]" value="' . base64_encode($folder->file_name) . '"/>', '<a href="/admin/search-folders/' . $pid . '?parent_folder=' . $folder->file_name . '">' . $folder->file_name . '</a>'];
-                        } else {
-                            $rows[] = ['<input type="checkbox" name="folders[]" value="' . base64_encode($folder->file_name) . '"/>', $folder->file_name];
-                        }
+                        $item = array();
+                        $item['parent_id'] = 0;
+                        $item['platform_id'] = $pid;
+                        $item['order'] = 0;
+                        $item['name'] = $folder->file_name;
+                        $item['name_relative'] = $folder->file_name_relative;
+                        $item['file_type'] = $folder->file_type;
+                        DirectoryTree::create($item);
                     }
                 }
             }
-            $table = new Table($headers, $rows);
 
             $form = new Form();
             $form->action('/admin/post-add-folder');
             $form->method('post');
             $form->hidden('platform_id')->default($pid);
-            // $form->html($table->render());
-            $form->html(DirectoryTree::tree(function ($tree){
-                    $tree->branch(function($branch){
-                        $item = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/><a href="/admin/search-folders/' . 1 . '?parent_folder=' . $branch['name'] . '">' . $branch['name'] . '</a>';
+            $form->html(DirectoryTree::tree(function ($tree) use($pid) {
+                    $tree->branch(function($branch) use($pid) {
+                        if ($branch['file_type']==2) {
+                            $item = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/>&nbsp;&nbsp;<a href="/admin/search-folders/' . 1 . '?parent_folder=' . $branch['name'] . '">' . $branch['name_relative'] . '</a>';
+                        } else {
+                            $item = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/>&nbsp;&nbsp;' . $branch['name_relative'];
+                        }
+                        
                         return $item;
+                    });
+
+                    $tree->query(function ($model) use($pid) {
+                        return $model->where('platform_id', $pid);
                     });
                 })
             );
-            $content->row(new Box('目录保护列表', $form));
-
-            //$content->row(DirectoryTree::tree());
+            $content->row( (new Box('目录保护列表', $form))->style('info')->solid() );
         });
 
     }
@@ -186,6 +189,10 @@ class FolderController extends Controller
 
             return back();
         }
+    }
+
+    public function ajax_get_sub_files($pid, $parent_id) {
+
     }
 
 
