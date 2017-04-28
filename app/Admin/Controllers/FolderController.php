@@ -146,7 +146,7 @@ class FolderController extends Controller
             $form->html(DirectoryTree::tree(function ($tree) use($pid) {
                     $tree->branch(function($branch) use($pid) {
                         if ($branch['file_type']==2) {
-                            $item = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/>&nbsp;&nbsp;<a href="/admin/folder-whitelist-add/' . $pid . '/' . $branch['parent_id'] . '/' . base64_encode($branch['name']) . '">' . $branch['name_relative'] . '</a>';
+                            $item = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/>&nbsp;&nbsp;<a href="/admin/folder-whitelist-add/' . $pid . '/' . $branch['id'] . '/' . base64_encode($branch['name']) . '">' . $branch['name_relative'] . '</a>';
                         } else {
                             $item = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/>&nbsp;&nbsp;' . $branch['name_relative'];
                         }
