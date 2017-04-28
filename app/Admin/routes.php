@@ -22,7 +22,7 @@ Route::group([
     // 目录保护
     $router->get('folders', 'FolderController@index');
     $router->get('view-folder/{pid}', 'FolderController@show');
-    $router->get('folder-whitelist-add/{pid}/{parent_id?}', 'FolderController@folderWhitelistAdd');
+    $router->get('folder-whitelist-add/{pid}/{parent_id?}/{$parent_folder?}', 'FolderController@folderWhitelistAdd');
     $router->get('folder-whitelist-del/{pid}/{id}', 'FolderController@folderWhitelistDel');
     $router->get('search-folders/{pid}/{parent_id}', 'FolderController@search');
     $router->post('post-add-folder', 'FolderController@postAddWhitelist');
