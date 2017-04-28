@@ -144,8 +144,8 @@ class FolderController extends Controller
             // $form->html($table->render());
             $form->html(DirectoryTree::tree(function ($tree){
                     $tree->branch(function($branch){
-                        $cb = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/><a href="/admin/search-folders/' . 1 . '?parent_folder=' . $branch['name'] . '">' . $branch['name'] . '</a>';
-                        return $cb;
+                        $item = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/><a href="/admin/search-folders/' . 1 . '?parent_folder=' . $branch['name'] . '">' . $branch['name'] . '</a>';
+                        return $item;
                     });
                 })
             );

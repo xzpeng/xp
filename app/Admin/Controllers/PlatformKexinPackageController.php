@@ -201,6 +201,6 @@ class PlatformKexinPackageController extends Controller
 
         $record->save();
 
-        return redirect()->back();
+        return redirect('/admin/distribution-records/' . $package_id);
     }
 }
