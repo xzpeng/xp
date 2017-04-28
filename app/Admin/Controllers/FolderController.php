@@ -91,12 +91,12 @@ class FolderController extends Controller
 
 
     public function folderWhitelistAdd($pid, $parent_id=0, $parent_folder='/') {
-        if ($parent_id==0 && $parent_folder=='/') {
-            DirectoryTree::where('platform_id', $pid)->delete();
-        } else {
+        DirectoryTree::where('platform_id', $pid)->delete();
+
+        if ($parent_folder!='/') {
             $parent_folder = base64_decode($parent_folder);
         }
-
+        
     	return Admin::content(function (Content $content) use($pid, $parent_id, $parent_folder) {
             $content->header('目录保护');
             $content->description('当前目录：/');
