@@ -10,6 +10,7 @@ use Encore\Admin\Controllers\ModelForm;
 
 use App\Models\Platform;
 use App\Models\Folder;
+use App\Models\DirectoryTree;
 
 use Illuminate\Http\Request;
 
@@ -19,6 +20,7 @@ use Encore\Admin\Widgets\Box;
 use Encore\Admin\Widgets\Tab;
 use Encore\Admin\Widgets\Table;
 use Encore\Admin\Widgets\Form;
+use Encore\Admin\Tree;
 
 class FolderController extends Controller
 {
@@ -113,15 +115,15 @@ class FolderController extends Controller
                                 'query_path' => '/'
                             )
                         );
-
+/*
 	            $socketClient = new \App\SocketClient($platform->platform_ip, config('app.socket_remote_port'), $xml_data);
                 $socket_response = $socketClient->send();
-                $socketClient->close();
+                $socketClient->close();*/
                 
-                /*
+                
                 $xml = '<?xml version="1.0" encoding="UTF-8"?><Response><result>Success</result><message><item><file_name>/tmp/.keystone_install_lock</file_name><file_type>1</file_type></item><item><file_name>/tmp/aprfIczf9</file_name><file_type>1</file_type></item><item><file_name>/tmp/com.apple.launchd.1glvZv3cOU</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.8XEBJ773jd</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.JReff3ZINe</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.r0BfkWU9j4</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.Wgym89EbHN</file_name><file_type>2</file_type></item><item><file_name>/tmp/com.apple.launchd.yC2qRjsFOh</file_name><file_type>2</file_type></item><item><file_name>/tmp/cvcd</file_name><file_type>2</file_type></item><item><file_name>/tmp/KSOutOfProcessFetcher.CifFMeoplW</file_name><file_type>2</file_type></item></message></Response>';
                 $socket_response = new \SimpleXMLElement($xml);
-*/
+
                 if( strtolower($socket_response->result)=='success' ) {
                     $folders = $socket_response->message->item;
                     foreach ($folders as $folder) {
@@ -139,8 +141,17 @@ class FolderController extends Controller
             $form->action('/admin/post-add-folder');
             $form->method('post');
             $form->hidden('platform_id')->default($pid);
-            $form->html($table->render());
+            // $form->html($table->render());
+            $form->html(DirectoryTree::tree(function ($tree){
+                    $tree->branch(function($branch){
+                        $cb = '<input type="checkbox" name="folders[]" value="' . base64_encode($branch['name']) . '"/><a href="/admin/search-folders/' . 1 . '?parent_folder=' . $branch['name'] . '">' . $branch['name'] . '</a>';
+                        return $cb;
+                    });
+                })
+            );
             $content->row(new Box('目录保护列表', $form));
+
+            //$content->row(DirectoryTree::tree());
         });
 
     }

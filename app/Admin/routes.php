@@ -17,6 +17,7 @@ Route::group([
     $router->resource('securitysoft-packages', SecuritysoftController::class);
     $router->resource('kexin-packages', KexinPackageController::class);
     $router->resource('whitelists', WhitelistController::class);
+    $router->resource('dt', DirectoryTreeController::class);
 
     // 目录保护
     $router->get('folders', 'FolderController@index');

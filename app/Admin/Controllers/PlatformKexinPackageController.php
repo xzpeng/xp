@@ -136,6 +136,7 @@ class PlatformKexinPackageController extends Controller
             $form->hidden('package_id')->value($id);
             $form->select('platform_id', '主机')->options(Platform::all()->pluck('platform_name', 'id'))->attribute(['required'=>'required']);
             $form->text('dst_file_dir', '上传路径')->default('/home');
+            $form->radio('type', '下发文件')->options(['all' => '全部', 'whitelist'=> '白名单'])->default('all');
 
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
@@ -161,13 +162,16 @@ class PlatformKexinPackageController extends Controller
         $package_id = $request->input('package_id');
         $platform_id = $request->input('platform_id');
         $dst_file_dir = $request->input('dst_file_dir');
+        $type = $request->input('type');
 
         $package = KexinPackage::find($package_id);
         $platform = Platform::find($platform_id);
 
+        $func = $type=='all'?'packagetransfer':'packagetransfer-whitelist';
+
         $xml_data = array(
                         'module' => 'remotefile_manage',
-                        'func' => 'packagetransfer',
+                        'func' => $func,
                         'info' => array(
                             'package_id' => $package_id,
                             'src_file_name' => config('filesystems.disks.admin.root') . '/' . $package->package_dir,
